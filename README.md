@@ -31,4 +31,4 @@ For further details on contributing please refer to the [contribution guide](CON
 
 ## Other
 
-This repo is release under this [license](LICENSE)
+This repo is release under this [licence](LICENCE)
