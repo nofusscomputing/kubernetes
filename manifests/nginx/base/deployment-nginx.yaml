@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: webserver
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: webserver
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: webserver
+    spec:
+      containers:
+        - name: backend
+          image: docker.io/nginx:alpine
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+          volumeMounts:
+            - name: http-root
+              mountPath: /usr/share/nginx/html
+              mountPropagation: HostToContainer
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+      tolerations: []
+      volumes:
+        - name: http-root
+          hostPath:
+            # Ensure the file directory is created.
+            path: /opt/webserver
+            type: DirectoryOrCreate
+        - name: nginx-config
+          configMap:
+            name: nginx-config
