@@ -18,3 +18,19 @@ resources:
 
 components:
   - ../../components/service-monitor
+
+
+replacements:
+
+  - source:
+      kind: Deployment
+      name: gitlab-runner-controller-manager
+      fieldPath: metadata.labels.[app.kubernetes.io/instance]
+    targets:
+      - select:
+          kind: ServiceMonitor
+          name: controller-manager-metrics-monitor
+        options:
+          create: true
+        fieldPaths:
+          - spec.selector.matchLabels.[app.kubernetes.io/instance]
