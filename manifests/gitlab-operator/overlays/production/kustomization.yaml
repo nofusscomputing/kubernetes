@@ -1,0 +1,20 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: operators
+
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: my-gitlab-runner-instance
+
+resources:
+  - ../../base
+
+
+components:
+  - ../../components/service-monitor
