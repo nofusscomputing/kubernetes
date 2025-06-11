@@ -1,0 +1,109 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/part-of: nfc-monitoring
+
+
+patches:
+  - target:
+      kind: Alertmanager
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/version
+        value: v0.27.0
+
+      - op: replace
+        path: /spec/externalUrl
+        value: alert-manager.local
+
+  - target:
+      kind: Prometheus
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/version
+        value: 2.47.0
+
+      - op: replace
+        path: /spec/alerting/alertmanagers
+        value:
+          - apiVersion: v2
+            name: alertmanager-cluster
+            namespace: alert
+            port: web
+
+
+#
+# Alert Manaer Ingress Setup
+#
+# patches:
+#   - patch: |-
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1cluster-issuer
+#         value: cluster
+
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1common-name
+#         value: alert-manager.local
+
+#       - op: replace
+#         path: /spec/rules/0/host
+#         value: alert-manager.local
+
+#       - op: replace
+#         path: /spec/tls/0/hosts/0
+#         value: alert-manager.local
+
+#     target:
+#       kind: Ingress
+#       name: alert-manager
+#       version: v1
+
+
+#
+# Prometheus Ingress Setup
+#
+#   - patch: |-
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1cluster-issuer
+#         value: cluster
+
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1common-name
+#         value: prometheus.local
+
+#       - op: replace
+#         path: /spec/rules/0/host
+#         value: prometheus.local
+
+#       - op: replace
+#         path: /spec/tls/0/hosts/0
+#         value: prometheus.local
+
+#     target:
+#       kind: Ingress
+#       name: prometheus
+#       version: v1
+
+
+resources:
+  - ../../../alert-manager/overlays/production
+  - ../../../grafana-agent/overlays/production
+  - ../../../prometheus/overlays/production
+
+
+components:
+  - ../../../alert-manager/components/metrics
+  - ../../../alert-manager/components/prometheus-rules
+  - ../../../prometheus/components/alertmanager
+  - ../../../prometheus/components/grafana-datasource
+  - ../../../grafana-agent/components/dashboard
+  - ../../../grafana-agent/components/metrics
+  - ../../../grafana-agent/components/prometheus-rules
