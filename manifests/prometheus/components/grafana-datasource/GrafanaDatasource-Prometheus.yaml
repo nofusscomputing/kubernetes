@@ -1,0 +1,24 @@
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  labels:
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/instance: cluster
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: monitoring
+  name: prometheus
+spec:
+  allowCrossNamespaceImport: true
+  datasource:
+    access: proxy
+    type: prometheus
+    isDefault: true
+    # jsonData:
+    #   timeInterval: 5s
+    #   tlsSkipVerify: true
+    name: Earth Prometheus
+    url: -prometheus-http-url-
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana

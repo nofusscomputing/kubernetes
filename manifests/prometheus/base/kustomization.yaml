@@ -1,0 +1,91 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: metrics
+
+#
+# Note: Dont use images, use patch below for spec.version
+#
+# images:
+#   - name:
+#     newTag:
+
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/part-of: prometheus
+
+
+resources:
+  - ClusterRole-prometheus.yaml
+  - ClusterRole-prometheus-config.yaml
+  - ClusterRole-prometheus-monitoring.yaml
+  - ClusterRoleBinding-prometheus.yaml
+  - ClusterRoleBinding-prometheus-config.yaml
+  - ClusterRoleBinding-prometheus-monitoring.yaml
+  - ServiceAccount.yaml
+  - Prometheus.yaml
+  - Service.yaml
+  - ServiceMonitor.yaml
+
+
+patches:
+  - target:
+      kind: Prometheus
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/version
+        value: 2.47.0
+
+
+replacements:
+  - source:
+      kind: Prometheus
+      name: cluster
+      fieldPath: metadata.namespace
+    targets:
+      - select:
+          kind: ClusterRoleBinding
+          name: prometheus
+        fieldPaths:
+          - subjects.[name=prometheus].namespace
+
+      - select:
+          kind: ClusterRoleBinding
+          name: prometheus-config
+        fieldPaths:
+          - subjects.[name=prometheus].namespace
+
+      - select:
+          kind: ClusterRoleBinding
+          name: prometheus-monitoring
+        fieldPaths:
+          - subjects.[name=prometheus].namespace
+
+  - source:
+      kind: Prometheus
+      name: cluster
+      fieldPath: metadata.labels
+    targets:
+      - select:
+          kind: Prometheus
+          name: cluster
+        fieldPaths:
+          - spec.podMetadata.labels
+
+  - source:
+      kind: Prometheus
+      name: cluster
+      fieldPath: metadata.labels.[app.kubernetes.io/instance]
+    targets:
+      - select:
+          kind: Prometheus
+          name: cluster
+        fieldPaths:
+          - spec.ruleSelector.matchLabels.[app.kubernetes.io/instance]
