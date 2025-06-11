@@ -1,0 +1,29 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  labels:
+    app.kubernetes.io/component: alerting
+  name: cluster
+spec:
+  externalUrl: alert-manager.local
+  # image: "{{ .Values.nfc_monitoring.alert_manager.image.name }}:{{ .Values.nfc_monitoring.alert_manager.image.tag }}"
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMetadata:
+    labels:
+      app.kubernetes.io/component: alerting
+  replicas: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 4m
+      memory: 100Mi
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: alertmanager
+  version: v0.27.0

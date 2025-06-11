@@ -7,14 +7,27 @@ kind: Kustomization
 namespace: metrics
 
 
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/part-of: alertmanager
+
+
 patches:
   - target:
-      kind: Prometheus
+      kind: Alertmanager
       name: cluster
     patch: |-
       - op: replace
         path: /spec/version
-        value: 2.47.0
+        value: v0.27.0
+
+      - op: replace
+        path: /spec/externalUrl
+        value: alert-manager.local
+
 #
 # Ingress Setup
 #
@@ -45,7 +58,7 @@ resources:
   - ../../base
 
 components:
-  # - ../../components/alertmanager
-  - ../../components/prometheus-rules
+  - ../../components/dashboard
   - ../../components/ingress
-  # - ../../components/grafana-datasource
+  # - ../../components/metrics
+  # - ../../components/prometheus-rules

@@ -1,0 +1,49 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: alert
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/part-of: alertmanager
+
+
+resources:
+  # - Secret-alertmanager.yaml
+  - ServiceAccount-alertmanager.yaml
+  - AlertManager-cluster.yaml
+  - Service-alertmanager.yaml
+  # - PrometheusRule-alertmanager.yaml
+  # - serviceMonitor-alertmanager.yaml
+
+
+patches:
+  - target:
+      kind: Alertmanager
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/version
+        value: v0.27.0
+
+      - op: replace
+        path: /spec/externalUrl
+        value: alert-manager.local
+
+
+replacements:
+  - source:
+      kind: Alertmanager
+      name: cluster
+      fieldPath: metadata.labels
+    targets:
+      - select:
+          kind: Alertmanager
+          name: cluster
+        fieldPaths:
+          - spec.podMetadata.labels
