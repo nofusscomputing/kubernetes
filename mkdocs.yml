@@ -1,0 +1,28 @@
+INHERIT: website-template/mkdocs.yml
+
+docs_dir: "docs"
+
+repo_name: Kubernetes
+repo_url: https://github.com/nofusscomputing/kubernetes
+edit_uri: "/edit/development/docs/"
+theme:
+  icon:
+    repo: fontawesome/brands/github
+
+
+nav:
+  - Home: index.md
+
+  - Articles:
+      - articles/index.md
+
+  - Projects:
+      - projects/index.md
+
+      - Kustomize:
+          - projects/kustomize/index.md
+
+  - Operations:
+      - operations/index.md
+
+  - Contact Us: contact.md
