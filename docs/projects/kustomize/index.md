@@ -12,8 +12,6 @@ about: https://github.com/nofusscomputing/kubernetes
 
 ----
 
-<br>
-
 ![GitHub forks](https://img.shields.io/github/forks/NofussComputing/kubernetes?logo=github&style=plastic&color=000000&labell=Forks) ![GitHub stars](https://img.shields.io/github/stars/NofussComputing/kubernetes?color=000000&logo=github&style=plastic) ![Github Watchers](https://img.shields.io/github/watchers/NofussComputing/kubernetes?color=000000&label=Watchers&logo=github&style=plastic)
 
 </span>
