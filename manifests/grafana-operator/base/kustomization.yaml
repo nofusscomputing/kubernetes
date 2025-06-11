@@ -1,0 +1,63 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# crds:
+#   # - crd/CustomResourceDefinition-grafanaalertrulegroups.yaml
+#   - crd/CustomResourceDefinition-grafanacontactpoints.yaml
+#   - crd/CustomResourceDefinition-grafanadashboards.yaml
+#   - crd/CustomResourceDefinition-grafanadatasources.yaml
+#   - crd/CustomResourceDefinition-grafanafolders.yaml
+#   - crd/CustomResourceDefinition-grafananotificationpolicies.yaml
+#   - crd/CustomResourceDefinition-grafanas.yaml
+
+
+namespace: grafana
+
+namePrefix: grafana-operator-
+
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: grafana-operator
+      app.kubernetes.io/part-of: grafana-operator
+
+
+resources:
+  - crd/CustomResourceDefinition-grafanaalertrulegroups.yaml
+  - crd/CustomResourceDefinition-grafanacontactpoints.yaml
+  - crd/CustomResourceDefinition-grafanadashboards.yaml
+  - crd/CustomResourceDefinition-grafanadatasources.yaml
+  - crd/CustomResourceDefinition-grafanafolders.yaml
+  - crd/CustomResourceDefinition-grafananotificationpolicies.yaml
+  - crd/CustomResourceDefinition-grafanas.yaml
+  - serviceaccount.yaml
+  - clusterrole.yaml
+  - clusterrolebinding.yaml
+  - deployment.yaml
+
+
+replacements:
+  - source:
+      kind: Deployment
+      name: controller-manager
+      fieldPath: metadata.namespace
+    targets:
+      - select:
+          kind: ClusterRoleBinding
+          name: controller-manager
+        fieldPaths:
+          - subjects.[name=controller-manager].namespace
+
+patches:
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+    patch: |-
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1sync-options
+        value: ServerSideApply=true
