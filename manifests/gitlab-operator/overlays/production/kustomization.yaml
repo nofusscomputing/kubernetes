@@ -16,8 +16,8 @@ resources:
   - ../../base
 
 
-components:
-  - ../../components/service-monitor
+# components:
+#   - ../../components/service-monitor
 
 
 replacements:
