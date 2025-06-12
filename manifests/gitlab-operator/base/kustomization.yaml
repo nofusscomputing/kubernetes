@@ -35,7 +35,7 @@ images:
     # config/manager/kustomization.tpl.yaml
   - name: kube-rbac-proxy
     newName: |-
-      "registry.gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/openshift4/ose-kube-rbac-proxy"
+      registry.gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/openshift4/ose-kube-rbac-proxy
     newTag: "v4.13.0"
 
 
