@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/part-of: nginx
   name: gitlab-runner
 spec:
+  config: gitlab-runner
   gitlabUrl: https://gitlab.com
   podSpec:
     - name: gitlab-runner

@@ -6,6 +6,7 @@ kind: Component
 
 resources:
   - Secret.yaml
+  - ConfigMap.yaml
   - Runner.yaml
 
 
