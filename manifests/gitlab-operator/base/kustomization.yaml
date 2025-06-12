@@ -7,7 +7,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 
-namePrefix: gitlab-runner-
+# namePrefix: gitlab-runner-
 
 
 labels:
@@ -64,20 +64,20 @@ patches:
   - path: |-
       https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/160ee6bf2ad4e05d0e673d0652cc47bd6100ddec/config/manager/auth_proxy_patch.yaml
 
-  # Operator only has arch AMD64
-  - patch: |-
-      - op: replace
-        path: /spec/template/spec/affinity
-        value:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: kubernetes.io/arch
-                  operator: In
-                  values:
-                  - amd64
-    target:
-      kind: Deployment
-      name: controller-manager
-      version: v1
+  # # Operator only has arch AMD64
+  # - patch: |-
+  #     - op: replace
+  #       path: /spec/template/spec/affinity
+  #       value:
+  #         nodeAffinity:
+  #           requiredDuringSchedulingIgnoredDuringExecution:
+  #             nodeSelectorTerms:
+  #             - matchExpressions:
+  #               - key: kubernetes.io/arch
+  #                 operator: In
+  #                 values:
+  #                 - amd64
+  #   target:
+  #     kind: Deployment
+  #     name: controller-manager
+  #     version: v1
