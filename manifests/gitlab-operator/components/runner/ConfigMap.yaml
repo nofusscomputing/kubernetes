@@ -12,7 +12,7 @@ data:
       shell = "bash"
 
       [runners.kubernetes]
-        pull_policy = "if-not-present}"
+        pull_policy = "if-not-present"
 
         cpu_limit = "100m"
         cpu_request = "50m"
