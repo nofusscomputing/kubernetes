@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/component: ci-cd-runner
     app.kubernetes.io/name: gitlab
     app.kubernetes.io/part-of: nginx
-  name: my-gitlab-runner-instance
+  name: my-gitlab
 spec:
   config: gitlab-runner
   gitlabUrl: https://gitlab.com
