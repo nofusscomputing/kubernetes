@@ -9,8 +9,11 @@ metadata:
     app.kubernetes.io/part-of: nginx
   name: my-gitlab
 spec:
+  buildImage: debian:stable-slim
+  concurrent: 2
   config: gitlab-runner
   gitlabUrl: https://gitlab.com
+  # helperImage:
   podSpec:
     - name: gitlab-runner
       patchType: merge
