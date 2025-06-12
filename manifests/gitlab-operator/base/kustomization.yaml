@@ -31,38 +31,38 @@ images:
   - name: controller
     newName: |-
       registry.gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/gitlab-runner-operator
-    newTag: "v1.31.0"
+    newTag: "v1.37.0"
     # config/manager/kustomization.tpl.yaml
   - name: kube-rbac-proxy
     newName: |-
       registry.gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/openshift4/ose-kube-rbac-proxy
-    newTag: "v4.13.0"
+    newTag: "v4.15.0"
 
-
+# v1.37.0 160ee6bf2ad4e05d0e673d0652cc47bd6100ddec
 resources:
     # Dont use default as it points to invalid kustomize dirs
   # - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/default?ref=e8254fb99328edd9e78f6646e8abc2f7a42fdd96
 
     # config/default/kustomization.yaml
-  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/crd?ref=e8254fb99328edd9e78f6646e8abc2f7a42fdd96
+  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/crd?ref=160ee6bf2ad4e05d0e673d0652cc47bd6100ddec
 
     # config/default/kustomization.yaml
-  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/rbac?ref=e8254fb99328edd9e78f6646e8abc2f7a42fdd96
+  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/rbac?ref=160ee6bf2ad4e05d0e673d0652cc47bd6100ddec
 
     # config/manager/kustomization.tpl.yaml
   # - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/manager/manager.yaml?ref=e8254fb99328edd9e78f6646e8abc2f7a42fdd96
-  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/29031ec8946ebb30e73834d2a34812a47a1d3996/config/manager/manager.yaml
+  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/160ee6bf2ad4e05d0e673d0652cc47bd6100ddec/config/manager/manager.yaml
 
 
 components:
   # config/manager/kustomization.tpl.yaml
-  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/manager/components/kubernetes?ref=e8254fb99328edd9e78f6646e8abc2f7a42fdd96
+  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/manager/components/kubernetes?ref=160ee6bf2ad4e05d0e673d0652cc47bd6100ddec
 
 
 patches:
   # config/manager/kustomization.tpl.yaml
   - path: |-
-      https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/e8254fb99328edd9e78f6646e8abc2f7a42fdd96/config/manager/auth_proxy_patch.yaml
+      https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/160ee6bf2ad4e05d0e673d0652cc47bd6100ddec/config/manager/auth_proxy_patch.yaml
 
   # Operator only has arch AMD64
   - patch: |-
