@@ -7,10 +7,10 @@ kind: Kustomization
 namespace: operators
 
 
-labels:
-  - includeSelectors: true
-    pairs:
-      app.kubernetes.io/instance: my-gitlab-runner-instance
+# labels:
+#   - includeSelectors: true
+#     pairs:
+#       app.kubernetes.io/instance: my-gitlab-runner-instance
 
 resources:
   - ../../base
@@ -20,17 +20,17 @@ resources:
 #   - ../../components/service-monitor
 
 
-replacements:
+# replacements:
 
-  - source:
-      kind: Deployment
-      name: gitlab-runner-controller-manager
-      fieldPath: metadata.labels.[app.kubernetes.io/instance]
-    targets:
-      - select:
-          kind: ServiceMonitor
-          name: controller-manager-metrics-monitor
-        options:
-          create: true
-        fieldPaths:
-          - spec.selector.matchLabels.[app.kubernetes.io/instance]
+#   - source:
+#       kind: Deployment
+#       name: gitlab-runner-controller-manager
+#       fieldPath: metadata.labels.[app.kubernetes.io/instance]
+#     targets:
+#       - select:
+#           kind: ServiceMonitor
+#           name: controller-manager-metrics-monitor
+#         options:
+#           create: true
+#         fieldPaths:
+#           - spec.selector.matchLabels.[app.kubernetes.io/instance]
