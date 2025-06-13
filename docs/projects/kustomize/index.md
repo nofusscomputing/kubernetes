@@ -18,3 +18,15 @@ about: https://github.com/nofusscomputing/kubernetes
 
 This project exists to provide a single location for all you Kubernetes deployment puposes. Contained within the [Kustomize repository](https://github.com/nofusscomputing/kubernetes) are Kubernetes Kustomize manifests ready for deployment. You are free to use them and that includes to collaborate in the addition and maintenance of the manifests.
 
+
+## Problems to Solve
+
+As the intent of this repository is for config management, although limited to the deployment configuration minus any secrets and customizations. As much as possible **There is a requirement for CI for Quality Control.** To aid in this tooling to assist in the process will need to be created. The following list includes and is not limited to, problems to solve:
+
+- Deploying the manifests to test they work
+
+- Identifying if a base / component has a dependency. _i.e. other apps that must be deployed first._
+
+- Updating manifest repo locations.
+
+  if a manifest that is fetched via git has had an update, then being able to update this when it occurs or close to.
