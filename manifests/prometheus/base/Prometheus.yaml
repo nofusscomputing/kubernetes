@@ -1,0 +1,51 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    app.kubernetes.io/component: metrics
+  name: cluster
+spec:
+  alerting:
+    alertmanagers: []
+  #   - apiVersion: v2
+  #     name: alertmanager-{{ $.Release.Name }}
+  #     namespace: "{{ .Values.nfc_monitoring.alert_manager.namespace }}"
+  #     port: web
+  enableFeatures: []
+  enableRemoteWriteReceiver: false
+  externalLabels: {}
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMetadata:
+    labels:
+      app.kubernetes.io/component: metrics
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  probeNamespaceSelector: {}
+  probeSelector: {}
+  replicas: 1
+  resources:
+    requests:
+      memory: 400Mi
+  retentionSize: 2GB
+  ruleNamespaceSelector: {}
+  ruleSelector:
+    matchLabels:
+      app.kubernetes.io/instance: -set-by-replacement-
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+  version: -set-by-patch-

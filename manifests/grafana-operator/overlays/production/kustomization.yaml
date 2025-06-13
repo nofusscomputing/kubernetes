@@ -1,0 +1,19 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: grafana
+
+
+images:
+  - name: ghcr.io/grafana/grafana-operator
+    newTag: v5.15.1
+
+
+resources:
+  - ../../base
+
+components:
+  - ../../components/metrics

@@ -1,0 +1,29 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: operators
+
+images:
+  #
+  # Note; if you update the image, update the image within the patch
+  #
+  - name: quay.io/prometheus-operator/prometheus-operator
+    newTag: v0.79.2
+
+resources:
+  - ../../base
+
+
+patches:
+  - target:
+      kind: Deployment
+      name: prometheus-operator
+    # yamllint disable rule:indentation
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/args/1
+        value: --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.79.2
+    # yamllint enable rule:indentation

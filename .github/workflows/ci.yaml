@@ -1,0 +1,24 @@
+---
+
+name: 'CI'
+
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '*'
+
+jobs:
+
+
+  mkdocs:
+    name: 'MKDocs'
+    permissions:
+      pull-requests: write
+      contents: write
+      statuses: write
+      checks: write
+      actions: write
+    uses: nofusscomputing/action_mkdocs/.github/workflows/reusable_mkdocs.yaml@development

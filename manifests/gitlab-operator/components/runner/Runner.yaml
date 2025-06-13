@@ -1,0 +1,25 @@
+---
+
+apiVersion: apps.gitlab.com/v1beta2
+kind: Runner
+metadata:
+  labels:
+    app.kubernetes.io/component: ci-cd-runner
+    app.kubernetes.io/name: gitlab
+    app.kubernetes.io/part-of: nginx
+  name: my-gitlab
+spec:
+  buildImage: debian:stable-slim
+  concurrent: 2
+  config: gitlab-runner
+  gitlabUrl: https://gitlab.com
+  # helperImage:
+  podSpec:
+    - name: gitlab-runner
+      patchType: merge
+      # yamllint disable rule:indentation
+      patch: |
+        securityContext:
+          runAsNonRoot: false
+      # yamllint enable rule:indentation
+  token: gitlab-runner-token

@@ -1,0 +1,36 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: operators
+
+
+# labels:
+#   - includeSelectors: true
+#     pairs:
+#       app.kubernetes.io/instance: my-gitlab-runner-instance
+
+resources:
+  - ../../base
+
+
+# components:
+#   - ../../components/service-monitor
+
+
+# replacements:
+
+#   - source:
+#       kind: Deployment
+#       name: gitlab-runner-controller-manager
+#       fieldPath: metadata.labels.[app.kubernetes.io/instance]
+#     targets:
+#       - select:
+#           kind: ServiceMonitor
+#           name: controller-manager-metrics-monitor
+#         options:
+#           create: true
+#         fieldPaths:
+#           - spec.selector.matchLabels.[app.kubernetes.io/instance]

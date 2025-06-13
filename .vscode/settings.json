@@ -1,0 +1,35 @@
+{
+    "linter.linters": {
+        "yamllint": {
+            "capabilities": [
+                "ignore-line"
+            ],
+            "command": [
+                "yamllint",
+                "--format",
+                "parsable",
+                [
+                    "$config",
+                    "--config-file",
+                    "$config"
+                ],
+                "-"
+            ],
+            "configFiles": [
+                ".yamllint.yml",
+                ".yamllint.yaml",
+                ".yamllint"
+            ],
+            "enabled": true,
+            "languages": [
+                "yaml"
+            ],
+            "name": "yamllint",
+            "url": "https://github.com/adrienverge/yamllint"
+        }
+    },
+    "editor.detectIndentation": false,
+    "editor.indentSize": "tabSize",
+    "editor.tabSize": 2,
+    "files.eol": "\n"
+}
