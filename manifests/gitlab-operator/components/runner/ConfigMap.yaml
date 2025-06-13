@@ -23,7 +23,7 @@ data:
 
         memory_limit = "1G"
         memory_request = "64M"
-        helper_memory_limit = "128M"
+        helper_memory_limit = "256M"
         helper_memory_request = "64M"
         service_memory_limit = "128M"
         service_memory_request = "64M"
