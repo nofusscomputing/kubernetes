@@ -57,7 +57,9 @@ patches:
       group: apiextensions.k8s.io
       version: v1
       kind: CustomResourceDefinition
+    # yamllint disable rule:indentation
     patch: |-
       - op: add
         path: /metadata/annotations/argocd.argoproj.io~1sync-options
         value: ServerSideApply=true
+    # yamllint enable rule:indentation

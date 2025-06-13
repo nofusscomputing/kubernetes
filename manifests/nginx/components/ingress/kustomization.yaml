@@ -8,7 +8,7 @@ resources:
   - ingress.yaml
 
 patches:
-
+  # yamllint disable rule:indentation
   - patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1cluster-issuer
@@ -33,3 +33,4 @@ patches:
       kind: Ingress
       name: nginx
       version: v1
+      # yamllint enable rule:indentation

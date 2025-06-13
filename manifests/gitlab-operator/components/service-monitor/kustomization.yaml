@@ -37,7 +37,7 @@ replacements:
 
 
 patches:
-
+  # yamllint disable rule:indentation
   - patch: |-
       - op: remove
         path: /metadata/labels/app.kubernetes.io~1managed-by
@@ -48,6 +48,7 @@ patches:
           app.kubernetes.io/component: metrics
           app.kubernetes.io/name: prometheus
           app.kubernetes.io/part-of: gitlab-runner-operator
+    # yamllint enable rule:indentation
     target:
       kind: ServiceMonitor
       name: controller-manager-metrics-monitor

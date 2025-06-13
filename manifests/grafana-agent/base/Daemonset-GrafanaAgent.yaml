@@ -31,7 +31,6 @@ spec:
             - --config.expand-env=true
           name: grafana-agent
           image: "grafana/agent:v0.43.4"
-          #imagePullPolicy: Never
           ports:
             - containerPort: 12345
               name: grafana-metrics
@@ -47,8 +46,6 @@ spec:
             capabilities:
               add:
                 - SYS_TIME
-              # drop:
-              # - ALL
             readOnlyRootFilesystem: false
             privileged: true
           volumeMounts:

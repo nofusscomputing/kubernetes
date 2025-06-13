@@ -8,6 +8,7 @@ resources:
 
 
 patches:
+  # yamllint disable rule:indentation
   - patch: |-
       - op: replace
         path: /spec/datasource/url
@@ -16,3 +17,4 @@ patches:
     target:
       kind: GrafanaDatasource
       name: prometheus
+      # yamllint enable rule:indentation

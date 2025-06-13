@@ -12,6 +12,7 @@ patches:
   - target:
       kind: Runner
       name: gitlab-runner
+    # yamllint disable rule:indentation
     patch: |-
       # Runner Tags
       # - op: add
@@ -21,3 +22,4 @@ patches:
       - op: add
         path: /spec/runnerImage
         value: registry.gitlab.com/gitlab-org/gitlab-runner:v17.6.0
+    # yamllint enable rule:indentation

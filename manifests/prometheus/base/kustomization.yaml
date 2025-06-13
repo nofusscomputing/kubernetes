@@ -38,10 +38,12 @@ patches:
   - target:
       kind: Prometheus
       name: cluster
+    # yamllint disable rule:indentation
     patch: |-
       - op: replace
         path: /spec/version
         value: 2.47.0
+    # yamllint enable rule:indentation
 
 
 replacements:

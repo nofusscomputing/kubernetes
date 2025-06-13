@@ -23,6 +23,7 @@ resources:
 
 
 patches:
+  # yamllint disable rule:indentation
   - target:
       kind: Alertmanager
       name: cluster
@@ -34,7 +35,7 @@ patches:
       - op: replace
         path: /spec/externalUrl
         value: alert-manager.local
-
+  # yamllint enable rule:indentation
 
 replacements:
   - source:

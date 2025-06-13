@@ -14,6 +14,7 @@ patches:
   - target:
       kind: Alertmanager
       name: cluster
+    # yamllint disable rule:indentation
     patch: |-
       - op: replace
         path: /spec/version
@@ -22,10 +23,12 @@ patches:
       - op: replace
         path: /spec/externalUrl
         value: alert-manager.local
+    # yamllint enable rule:indentation
 
   - target:
       kind: Prometheus
       name: cluster
+    # yamllint disable rule:indentation
     patch: |-
       - op: replace
         path: /spec/version
@@ -38,6 +41,7 @@ patches:
             name: alertmanager-cluster
             namespace: alert
             port: web
+    # yamllint enable rule:indentation
 
 
 #

@@ -8,6 +8,7 @@ kind: Component
 
 
 patches:
+  # yamllint disable rule:indentation
   - patch: |-
       - op: replace
         path: /spec/alerting/alertmanagers
@@ -19,3 +20,4 @@ patches:
     target:
       kind: Prometheus
       name: cluster
+      # yamllint enable rule:indentation

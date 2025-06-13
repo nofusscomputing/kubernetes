@@ -14,4 +14,4 @@ spec:
       dashboards: grafana
   grafanaCom:
     id: 9578
-    revision: 4 # as @ 19-09-23
+    revision: 4     # as @ 19-09-23

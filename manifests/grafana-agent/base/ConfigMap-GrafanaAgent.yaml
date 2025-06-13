@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/component: exporter
   name: grafana-agent
 data:
+  # yamllint disable rule:indentation
   agent.yaml: |
     metrics:
       wal_directory: /tmp/wal
@@ -31,3 +32,4 @@ data:
         include_exporter_metrics: true
         enable_collectors:
           - uname
+  # yamllint enable rule:indentation

@@ -17,7 +17,9 @@ spec:
   podSpec:
     - name: gitlab-runner
       patchType: merge
+      # yamllint disable rule:indentation
       patch: |
         securityContext:
           runAsNonRoot: false
+      # yamllint enable rule:indentation
   token: gitlab-runner-token

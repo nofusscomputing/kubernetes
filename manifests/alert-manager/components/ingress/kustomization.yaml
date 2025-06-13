@@ -33,4 +33,3 @@ resources:
 #       kind: Ingress
 #       name: alert-manager
 #       version: v1
-

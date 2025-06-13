@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/component: ci-cd-runner
   name: gitlab-runner
 data:
+  # yamllint disable rule:indentation
   config.toml: |
     [[runners]]
 
@@ -37,3 +38,4 @@ data:
 
         [runners.kubernetes.node_tolerations]
           "CriticalAddonsOnly=true" = "NoExecute"
+  # yamllint enable rule:indentation

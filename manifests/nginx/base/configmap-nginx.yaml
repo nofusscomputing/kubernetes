@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/part-of: nginx
   name: nginx
 data:
+  # yamllint disable rule:indentation
   default.conf: |
     server {
 
@@ -23,3 +24,4 @@ data:
 
             }
     }
+  # yamllint enable rule:indentation

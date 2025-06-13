@@ -19,14 +19,10 @@ labels:
       app.kubernetes.io/part-of: gitlab-runner-operator
 
 
-# crds:
-#   # config/default/kustomization.yaml
-#   # - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator//config/crd?ref=e8254fb99328edd9e78f6646e8abc2f7a42fdd96
-#   - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/e8254fb99328edd9e78f6646e8abc2f7a42fdd96/config/crd/bases/apps.gitlab.com_runners.yaml
-
-
 images:
-  # image details fetched from https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/releases using file `operator.k8s.yaml`
+  # image details fetched from 
+  # https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/releases using file
+  # `operator.k8s.yaml`
   # config/manager/kustomization.tpl.yaml
   - name: controller
     newName: |-
@@ -64,6 +60,7 @@ patches:
       https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/160ee6bf2ad4e05d0e673d0652cc47bd6100ddec/config/manager/auth_proxy_patch.yaml
 
   # # Operator only has arch AMD64
+  # yamllint disable rule:indentation
   - patch: |-
       - op: replace
         path: /spec/template/spec/affinity
@@ -80,3 +77,4 @@ patches:
       kind: Deployment
       name: controller-manager
       version: v1
+      # yamllint enable rule:indentation
