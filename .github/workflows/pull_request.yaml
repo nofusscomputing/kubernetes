@@ -1,0 +1,26 @@
+---
+
+name: Pull Requests
+
+
+on:
+  pull_request: {}
+
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Lint YAML files
+        run: yamllint ${PWD}/
+
+
+  pull-request:
+    name: pull-request
+    uses: nofusscomputing/action_pull_requests/.github/workflows/pull-requests.yaml@development

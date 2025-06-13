@@ -1,0 +1,17 @@
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  labels:
+    app.kubernetes.io/component: alerting
+  name: alertmanager
+spec:
+  allowCrossNamespaceImport: true
+  folder: "General"
+  resyncPeriod: 24h
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  grafanaCom:
+    id: 9578
+    revision: 4     # as @ 19-09-23

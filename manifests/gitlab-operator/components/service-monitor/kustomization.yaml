@@ -1,0 +1,54 @@
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+
+resources:
+  - https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/raw/39c4259c73b38f8e37bf0343f30740631cc1f191/config/prometheus/monitor.yaml
+
+
+replacements:
+  - source:
+      kind: Deployment
+      name: gitlab-runner-controller-manager
+      fieldPath: metadata.labels
+    targets:
+      - select:
+          kind: ServiceMonitor
+          name: controller-manager-metrics-monitor
+        fieldPaths:
+          - spec.selector.matchLabels
+#
+# Place this replacement in your overlays/*/kustomization
+# if you don't the instance label will not be picked up.
+#
+#   - source:
+#       kind: Deployment
+#       name: gitlab-runner-controller-manager
+#       fieldPath: metadata.labels.[app.kubernetes.io/instance]
+#     targets:
+#       - select:
+#           kind: ServiceMonitor
+#           name: controller-manager-metrics-monitor
+#         options:
+#           create: true
+#         fieldPaths:
+#           - spec.selector.matchLabels.[app.kubernetes.io/instance]
+
+
+patches:
+  # yamllint disable rule:indentation
+  - patch: |-
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1managed-by
+
+      - op: add
+        path: /metadata/labels
+        value:
+          app.kubernetes.io/component: metrics
+          app.kubernetes.io/name: prometheus
+          app.kubernetes.io/part-of: gitlab-runner-operator
+    # yamllint enable rule:indentation
+    target:
+      kind: ServiceMonitor
+      name: controller-manager-metrics-monitor

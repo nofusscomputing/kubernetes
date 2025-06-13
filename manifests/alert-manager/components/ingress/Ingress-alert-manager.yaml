@@ -1,0 +1,34 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/common-name: alert-manager.local
+    cert-manager.io/duration: 2160h
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-rotation-policy: Always
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/subject-countries: N/A
+    cert-manager.io/subject-organizationalunits: N/A
+    cert-manager.io/subject-organizations: N/A
+    cert-manager.io/subject-provinces: N/A
+  labels:
+    app.kubernetes.io/component: alerting
+  name: alert-manager
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: alert-manager.local
+      http:
+        paths:
+          - backend:
+              service:
+                name: cluster
+                port:
+                  name: web
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - alert-manager.local
+      secretName: certificate-tls-alert-manager

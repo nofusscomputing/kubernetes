@@ -1,0 +1,35 @@
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+
+resources:
+  - Ingress.yaml
+
+
+#############################
+# Items to Configure
+#############################
+
+# patches:
+#   - patch: |-
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1cluster-issuer
+#         value: cluster
+
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1common-name
+#         value: prometheus.local
+
+#       - op: replace
+#         path: /spec/rules/0/host
+#         value: prometheus.local
+
+#       - op: replace
+#         path: /spec/tls/0/hosts/0
+#         value: prometheus.local
+
+#     target:
+#       kind: Ingress
+#       name: prometheus
+#       version: v1

@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+  name: grafana-agent
+data:
+  # yamllint disable rule:indentation
+  agent.yaml: |
+    metrics:
+      wal_directory: /tmp/wal
+
+
+    integrations:
+
+      node_exporter:
+        enabled: true
+        rootfs_path: /host/root
+        sysfs_path: /host/sys
+        procfs_path: /host/proc
+        udev_data_path: /host/root/run/udev/data
+
+        filesystem_mount_points_exclude: "^/(dev|proc|sys|var/lib/docker/.+|/run/containerd/io.containerd.+)($|/)"
+        filesystem_fs_types_exclude: "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|ugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|ocfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+
+
+        netclass_ignored_devices: "^(veth.*|cali.*|[a-f0-9]{15})$"
+        netdev_device_exclude: "^(veth.*|cali.*|[a-f0-9]{15})$"
+
+
+        include_exporter_metrics: true
+        enable_collectors:
+          - uname
+  # yamllint enable rule:indentation

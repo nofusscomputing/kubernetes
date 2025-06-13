@@ -1,0 +1,66 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: metrics
+
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/part-of: alertmanager
+
+
+patches:
+  # yamllint disable rule:indentation
+  - target:
+      kind: Alertmanager
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/version
+        value: v0.27.0
+
+      - op: replace
+        path: /spec/externalUrl
+        value: alert-manager.local
+  # yamllint enable rule:indentation
+
+#
+# Ingress Setup
+#
+#   - patch: |-
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1cluster-issuer
+#         value: cluster
+
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1common-name
+#         value: prometheus.local
+
+#       - op: replace
+#         path: /spec/rules/0/host
+#         value: prometheus.local
+
+#       - op: replace
+#         path: /spec/tls/0/hosts/0
+#         value: prometheus.local
+
+#     target:
+#       kind: Ingress
+#       name: prometheus
+#       version: v1
+
+
+resources:
+  - ../../base
+
+components:
+  - ../../components/dashboard
+  - ../../components/ingress
+  # - ../../components/metrics
+  # - ../../components/prometheus-rules

@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "fnando.linter",
+        "jebbs.markdown-extended",
+        "redhat.vscode-yaml"
+    ]
+}

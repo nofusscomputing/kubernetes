@@ -1,0 +1,39 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: "cluster"
+    cert-manager.io/common-name: "domain-name.tld"
+    cert-manager.io/duration: "2160h"
+    cert-manager.io/subject-organizations: "N/A"
+    cert-manager.io/subject-organizationalunits: "N/A"
+    cert-manager.io/subject-countries: "N/A"
+    cert-manager.io/subject-provinces: "N/A"
+    # cert-manager.io/subject-localities: "N/A"
+    cert-manager.io/private-key-algorithm: "ECDSA"
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/private-key-rotation-policy: "Always"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  labels:
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/part-of: nginx
+  name: nginx
+
+spec:
+  rules:
+    - host: "domain-name.tld"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - "domain-name.tld"
+      secretName: "certificate-tls-domain-name.tld"
