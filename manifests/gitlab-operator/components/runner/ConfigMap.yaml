@@ -21,7 +21,7 @@ data:
         service_cpu_limit = "100m"
         service_cpu_request = "10m"
 
-        memory_limit = "512M"
+        memory_limit = "1G"
         memory_request = "64M"
         helper_memory_limit = "128M"
         helper_memory_request = "64M"
