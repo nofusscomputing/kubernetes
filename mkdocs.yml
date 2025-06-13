@@ -1,3 +1,5 @@
+---
+
 INHERIT: website-template/mkdocs.yml
 
 docs_dir: "docs"

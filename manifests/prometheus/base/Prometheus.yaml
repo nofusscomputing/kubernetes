@@ -15,7 +15,6 @@ spec:
   enableFeatures: []
   enableRemoteWriteReceiver: false
   externalLabels: {}
-  # image: {{ .Values.nfc_monitoring.prometheus.image.name }}:{{ .Values.nfc_monitoring.prometheus.image.tag}}
   nodeSelector:
     kubernetes.io/os: linux
   podMetadata:

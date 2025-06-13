@@ -7,7 +7,6 @@ metadata:
   name: cluster
 spec:
   externalUrl: alert-manager.local
-  # image: "{{ .Values.nfc_monitoring.alert_manager.image.name }}:{{ .Values.nfc_monitoring.alert_manager.image.tag }}"
   nodeSelector:
     kubernetes.io/os: linux
   podMetadata:

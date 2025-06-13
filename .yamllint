@@ -6,6 +6,7 @@
 ignore:
   - '.github/'
   - '**/crd/**'
+  - mkdocs.yml
   - '*PrometheusRule*'
   - '**/source/**'
 
