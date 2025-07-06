@@ -1,2 +1,6 @@
+# Build Directories
+manifests/*/base/charts/
+manifests/*/overlays/*/charts/
+
 # Temp Files
 *.tmp.*

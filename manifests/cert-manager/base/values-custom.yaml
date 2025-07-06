@@ -1,0 +1,15 @@
+---
+
+crds:
+  enabled: true
+affinity:
+  nodeAffinity: {}
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: Exists
+          topologyKey: kubernetes.io/hostname
