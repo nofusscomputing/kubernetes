@@ -1,0 +1,66 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: certs
+
+
+patches:
+  - target:
+      kind: ClusterIssuer
+      name: letsencrypt-prod
+    # yamllint disable rule:indentation
+    patch: |-
+      - op: replace
+        path: /spec/commonName
+        value: -kubernetes domain name-
+    # yamllint enable rule:indentation
+
+  - target:
+      kind: ClusterIssuer
+      name: letsencrypt-prod
+    # yamllint disable rule:indentation
+    patch: |-
+      - op: replace
+        path: /spec/acme/email
+        value: -My email-
+    # yamllint enable rule:indentation
+
+  - target:
+      kind: ClusterIssuer
+      name: letsencrypt-prod
+    # yamllint disable rule:indentation
+    patch: |-
+      - op: replace
+        path: /spec/acme/email
+        value: -My email-
+    # yamllint enable rule:indentation
+ 
+  - target:
+      kind: CustomResourceDefinition
+    # yamllint disable rule:indentation
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/argocd.argoproj.io~1sync-options
+        value: ServerSideApply=true
+    # yamllint enable rule:indentation
+
+
+helmCharts:
+  - name: cert-manager
+    repo: https://charts.jetstack.io
+    releaseName: cert-manager
+    namespace: certs
+    version: 'v1.16.2'
+    additionalValuesFiles:
+      - ../../base/values-custom.yaml
+      - values-production.yaml
+    valuesFile: ../../base/values-default.yaml
+
+
+components:
+  - ../../components/clusterissuer-cluster
+  - ../../components/clusterissuer-letsencrypt-prod
+  - ../../components/clusterissuer-letsencrypt-staging
