@@ -2,7 +2,22 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: postgres
+
+namespace: operators
+
 
 resources:
-  - Manifests.yaml
+  - ClusterRole-cnpg-manager.yaml
+  - ClusterRoleBinding-cnpg-manager-rolebinding.yaml
+  - ConfigMap-cnpg-default-monitoring.yaml
+  - CustomResourceDefinition-backups-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-clusterimagecatalogs-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-clusters-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-imagecatalogs-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-poolers-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-scheduledbackups-postgresql-cnpg-io.yaml
+  - Deployment-cnpg-controller-manager.yaml
+  - MutatingWebhookConfiguration-cnpg-mutating-webhook-configuration.yaml
+  - Service-cnpg-webhook-service.yaml
+  - ServiceAccount-cnpg-manager.yaml
+  - ValidatingWebhookConfiguration-cnpg-validating-webhook-configuration.yaml
