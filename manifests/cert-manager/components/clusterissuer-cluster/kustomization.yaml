@@ -1,0 +1,25 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+
+resources:
+  - Certificate-cluster-ca.yaml
+  - ClusterIssuer-cluster.yaml
+  - ClusterIssuer-selfsigned.yaml
+
+
+# patches:
+#   #
+#   # Set in Overlay kustomization.yaml
+#   #
+#   - target:
+#       kind: ClusterIssuer
+#       name: letsencrypt-prod
+#     # yamllint disable rule:indentation
+#     patch: |-
+#       - op: replace
+#         path: /spec/commonName
+#         value: -kubernetes domain name-
+#     # yamllint enable rule:indentation

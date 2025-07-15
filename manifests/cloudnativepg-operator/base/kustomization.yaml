@@ -1,0 +1,32 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: operators
+
+
+resources:
+  - ClusterRole-cnpg-database-editor-role.yaml
+  - ClusterRole-cnpg-database-viewer-role.yaml
+  - ClusterRole-cnpg-manager.yaml
+  - ClusterRole-cnpg-publication-editor-role.yaml
+  - ClusterRole-cnpg-publication-viewer-role.yaml
+  - ClusterRole-cnpg-subscription-editor-role.yaml
+  - ClusterRole-cnpg-subscription-viewer-role.yaml
+  - ClusterRoleBinding-cnpg-manager-rolebinding.yaml
+  - ConfigMap-cnpg-default-monitoring.yaml
+  - CustomResourceDefinition-backups-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-clusterimagecatalogs-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-clusters-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-databases-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-imagecatalogs-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-poolers-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-publications-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-scheduledbackups-postgresql-cnpg-io.yaml
+  - CustomResourceDefinition-subscriptions-postgresql-cnpg-io.yaml
+  - Deployment-cnpg-controller-manager.yaml
+  - MutatingWebhookConfiguration-cnpg-mutating-webhook-configuration.yaml
+  - Service-cnpg-webhook-service.yaml
+  - ServiceAccount-cnpg-manager.yaml
+  - ValidatingWebhookConfiguration-cnpg-validating-webhook-configuration.yaml

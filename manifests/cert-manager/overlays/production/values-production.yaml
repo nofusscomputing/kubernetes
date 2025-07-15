@@ -1,0 +1,11 @@
+---
+
+global:
+  leaderElection:
+    namespace: certs
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true
+webhook:
+  replicaCount: 1

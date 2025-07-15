@@ -1,0 +1,22 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+resources:
+  - ClusterIssuer-letsencrypt.yaml
+
+
+# patches:
+#   #
+#   # Set in Overlay kustomization.yaml
+#   #
+#   - target:
+#       kind: ClusterIssuer
+#       name: letsencrypt-prod
+#     # yamllint disable rule:indentation
+#     patch: |-
+#       - op: replace
+#         path: /spec/acme/email
+#         value: -My email-
+#     # yamllint enable rule:indentation
