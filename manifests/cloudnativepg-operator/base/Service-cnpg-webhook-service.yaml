@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: cnpg-webhook-service
-  namespace: postgres
+  namespace: cnpg-system
 spec:
   ports:
     - port: 443

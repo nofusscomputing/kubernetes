@@ -9,7 +9,7 @@ webhooks:
     clientConfig:
       service:
         name: cnpg-webhook-service
-        namespace: postgres
+        namespace: cnpg-system
         path: /validate-postgresql-cnpg-io-v1-backup
     failurePolicy: Fail
     name: vbackup.cnpg.io
@@ -29,7 +29,7 @@ webhooks:
     clientConfig:
       service:
         name: cnpg-webhook-service
-        namespace: postgres
+        namespace: cnpg-system
         path: /validate-postgresql-cnpg-io-v1-cluster
     failurePolicy: Fail
     name: vcluster.cnpg.io
@@ -49,7 +49,27 @@ webhooks:
     clientConfig:
       service:
         name: cnpg-webhook-service
-        namespace: postgres
+        namespace: cnpg-system
+        path: /validate-postgresql-cnpg-io-v1-database
+    failurePolicy: Fail
+    name: vdatabase.cnpg.io
+    rules:
+      - apiGroups:
+          - postgresql.cnpg.io
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - databases
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: cnpg-webhook-service
+        namespace: cnpg-system
         path: /validate-postgresql-cnpg-io-v1-pooler
     failurePolicy: Fail
     name: vpooler.cnpg.io
@@ -69,7 +89,7 @@ webhooks:
     clientConfig:
       service:
         name: cnpg-webhook-service
-        namespace: postgres
+        namespace: cnpg-system
         path: /validate-postgresql-cnpg-io-v1-scheduledbackup
     failurePolicy: Fail
     name: vscheduledbackup.cnpg.io

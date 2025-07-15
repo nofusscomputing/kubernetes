@@ -10,4 +10,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cnpg-manager
-    namespace: postgres
+    namespace: cnpg-system

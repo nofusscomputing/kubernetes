@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: cloudnative-pg
   name: cnpg-controller-manager
-  namespace: postgres
+  namespace: cnpg-system
 spec:
   replicas: 1
   selector:
@@ -20,6 +20,7 @@ spec:
         - args:
             - controller
             - --leader-elect
+            - --max-concurrent-reconciles=10
             - --config-map-name=cnpg-controller-manager-config
             - --secret-name=cnpg-controller-manager-config
             - --webhook-port=9443
@@ -27,14 +28,15 @@ spec:
             - /manager
           env:
             - name: OPERATOR_IMAGE_NAME
-              value: ghcr.io/cloudnative-pg/cloudnative-pg:1.23.2
+              value: ghcr.io/cloudnative-pg/cloudnative-pg:1.26.0
             - name: OPERATOR_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: MONITORING_QUERIES_CONFIGMAP
               value: cnpg-default-monitoring
-          image: ghcr.io/cloudnative-pg/cloudnative-pg:1.23.2
+          image: ghcr.io/cloudnative-pg/cloudnative-pg:1.26.0
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /readyz
@@ -70,6 +72,13 @@ spec:
             runAsUser: 10001
             seccompProfile:
               type: RuntimeDefault
+          startupProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /readyz
+              port: 9443
+              scheme: HTTPS
+            periodSeconds: 5
           volumeMounts:
             - mountPath: /controller
               name: scratch-data
