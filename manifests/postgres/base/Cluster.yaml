@@ -68,7 +68,7 @@ spec:
     inProgress: false
     reusePVC: false
 
-  primaryUpdateStrategy: supervised
+  primaryUpdateStrategy: unsupervised
 
   postgresql:
     parameters:
