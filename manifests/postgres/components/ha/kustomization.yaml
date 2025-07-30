@@ -1,0 +1,140 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+
+resources:
+  # - ../../base
+  - Cluster-main-02.yaml
+  - Service-main-r.yaml
+  - Service-main-ro.yaml
+  - Service-main-rw.yaml
+
+
+patches:
+
+  # yamllint disable rule:indentation
+  - patch: |-
+
+      - op: add
+        path: /metadata/name
+        value: main-01
+
+      - op: replace
+        path: /spec/replica
+        value:
+          primary: main-01
+          source: main-02
+
+      # yamllint enable rule:indentation
+    target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+      name: main
+
+  # yamllint disable rule:indentation
+  - patch: |-
+
+      - op: replace
+        path: /spec/externalClusters
+        value:
+
+          - name: main-01
+            connectionParameters:
+              host: main-01-rw.updated_by_replacement.svc
+              user: streaming_replica
+              dbname: postgres
+              sslmode: verify-full
+            sslKey:
+              name: main-01-replication
+              key: tls.key
+            sslCert:
+              name: main-01-replication
+              key: tls.crt
+            sslRootCert:
+              name: main-01-ca
+              key: ca.crt
+
+          - name: main-02
+            connectionParameters:
+              host: main-02-rw.updated_by_replacement.svc
+              user: streaming_replica
+              dbname: postgres
+              sslmode: verify-full
+            sslKey:
+              name: main-02-replication
+              key: tls.key
+            sslCert:
+              name: main-02-replication
+              key: tls.crt
+            sslRootCert:
+              name: main-02-ca
+              key: ca.crt
+
+      # yamllint enable rule:indentation
+    target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+
+
+
+replacements:
+  #
+  # Add to Top-most Kustomization.yaml
+  #
+  # Updates extenal cluster DNS name octet that contains the namespace
+  # - source:
+  #     kind: Cluster
+  #     name: main-01
+  #     fieldPath: metadata.namespace
+  #   targets:
+  #     - select:
+  #         kind: Cluster
+  #       fieldPaths:
+  #         - spec.externalClusters.[name=main-01].connectionParameters.host
+  #         - spec.externalClusters.[name=main-02].connectionParameters.host
+  #       options:
+  #         delimiter: "."
+  #         index: 1
+
+
+  #
+  # Add to Top-most Kustomization.yaml, if primary has be changed
+  #
+  # Updates each of the services to point the cluster that is denoted as primary
+  # within cluster main-02 
+  - source:
+      kind: Cluster
+      name: main-02
+      fieldPath: spec.replica.primary
+    targets:
+      - select:
+          kind: Service
+          name: main-r
+        fieldPaths:
+          - spec.selector.[cnpg.io/cluster]
+      - select:
+          kind: Service
+          name: main-ro
+        fieldPaths:
+          - spec.selector.[cnpg.io/cluster]
+      - select:
+          kind: Service
+          name: main-rw
+        fieldPaths:
+          - spec.selector.[cnpg.io/cluster]
+
+  # Dont change
+  - source:
+      kind: Cluster
+      name: main-02
+      fieldPath: metadata.labels.[app.kubernetes.io/part-of]
+    targets:
+      - select:
+          kind: Cluster
+        fieldPaths:
+          - metadata.labels.[app.kubernetes.io/part-of]
+          - spec.inheritedMetadata.labels.[app.kubernetes.io/part-of]
