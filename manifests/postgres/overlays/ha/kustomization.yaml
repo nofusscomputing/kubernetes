@@ -1,0 +1,55 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: postgres-15
+
+
+resources:
+  - ../production
+
+
+components:
+  - ../../components/ha
+
+
+patches:
+
+  # yamllint disable rule:indentation
+  - patch: |-
+
+      - op: replace
+        path: /spec/instances
+        value: 2
+      # yamllint enable rule:indentation
+    target:
+      kind: Cluster
+
+  # yamllint disable rule:indentation
+  - patch: |-
+
+      - op: replace
+        path: /spec/imageName
+        value: ghcr.io/cloudnative-pg/postgresql:15.12-11
+      # yamllint enable rule:indentation
+    target:
+      kind: Cluster
+
+
+replacements:
+
+  # Updates extenal cluster DNS name octet that contains the namespace
+  - source:
+      kind: Cluster
+      name: main-01
+      fieldPath: metadata.namespace
+    targets:
+      - select:
+          kind: Cluster
+        fieldPaths:
+          - spec.externalClusters.[name=main-01].connectionParameters.host
+          - spec.externalClusters.[name=main-02].connectionParameters.host
+        options:
+          delimiter: "."
+          index: 1
