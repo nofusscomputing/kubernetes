@@ -9,20 +9,33 @@ metadata:
     app.kubernetes.io/part-of: production-ha
   name: main-02
 spec:
+
   affinity:
     additionalPodAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 50
+        - weight: 100
           podAffinityTerm:
             labelSelector:
               matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: Exists
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - postgres
             topologyKey: kubernetes.io/hostname
 
     enablePodAntiAffinity: true
     nodeAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+        - weight: 50
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: Exists
         - weight: 100
           preference:
             matchExpressions:

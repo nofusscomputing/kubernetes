@@ -37,6 +37,20 @@ patches:
   # yamllint disable rule:indentation
   - patch: |-
 
+      - op: add
+        path: /spec/affinity/additionalPodAntiAffinity/preferredDuringSchedulingIgnoredDuringExecution/0
+        value:
+          weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/part-of
+                  operator: In
+                  values:
+                    - production-ha
+            topologyKey: kubernetes.io/hostname
+
+
       - op: replace
         path: /spec/externalClusters
         value:
