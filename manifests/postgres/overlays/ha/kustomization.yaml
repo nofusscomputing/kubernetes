@@ -7,11 +7,12 @@ namespace: postgres-15
 
 
 resources:
-  - ../production
+  - ../../base
 
 
 components:
   - ../../components/ha
+  - ../../components/metrics
 
 
 patches:
