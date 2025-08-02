@@ -13,6 +13,7 @@ resources:
 components:
   - ../../components/ha
   - ../../components/metrics
+  - ../../components/dashboard
 
 
 patches:
