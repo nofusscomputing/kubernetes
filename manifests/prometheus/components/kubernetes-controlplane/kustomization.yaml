@@ -1,0 +1,13 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+# v 0.15.0 = 68444c6b63b032a8761da09182ef63d89cc65cd5
+resources:
+  - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/68444c6b63b032a8761da09182ef63d89cc65cd5/manifests/kubernetesControlPlane-prometheusRule.yaml
+  - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/68444c6b63b032a8761da09182ef63d89cc65cd5/manifests/kubernetesControlPlane-serviceMonitorApiserver.yaml
+  - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/68444c6b63b032a8761da09182ef63d89cc65cd5/manifests/kubernetesControlPlane-serviceMonitorCoreDNS.yaml
+  - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/68444c6b63b032a8761da09182ef63d89cc65cd5/manifests/kubernetesControlPlane-serviceMonitorKubeControllerManager.yaml
+  - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/68444c6b63b032a8761da09182ef63d89cc65cd5/manifests/kubernetesControlPlane-serviceMonitorKubeScheduler.yaml
+  - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/68444c6b63b032a8761da09182ef63d89cc65cd5/manifests/kubernetesControlPlane-serviceMonitorKubelet.yaml
