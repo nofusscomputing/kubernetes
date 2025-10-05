@@ -1,0 +1,29 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+
+patches:
+  # yamllint disable rule:indentation
+  - patch: |-
+
+      - op: add
+        path: /spec/monitoring
+        value:
+          enablePodMonitor: true
+
+      - op: add
+        path: /spec/monitoring/podMonitorRelabelings
+        value:
+          - sourceLabels: ["__meta_kubernetes_pod_label_cnpg_io_cluster"]
+            targetLabel: cluster
+            action: replace
+          - sourceLabels: ["__meta_kubernetes_pod_name"]
+            targetLabel: instance
+            action: replace
+    # yamllint enable rule:indentation
+    target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
