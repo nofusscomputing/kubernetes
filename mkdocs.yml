@@ -1,6 +1,6 @@
 ---
 
-INHERIT: website-template/mkdocs.yml
+INHERIT: docs_template/mkdocs.yml
 
 docs_dir: "docs"
 
@@ -20,6 +20,14 @@ nav:
 
   - Projects:
       - projects/index.md
+
+      - docker:
+
+        - projects/docker/index.md
+
+        - bind:
+
+          - projects/docker/bind/index.md
 
       - Kustomize:
           - projects/kustomize/index.md

@@ -30,3 +30,8 @@ As the intent of this repository is for config management, although limited to t
 - Updating manifest repo locations.
 
   if a manifest that is fetched via git has had an update, then being able to update this when it occurs or close to.
+
+
+## Manifests
+
+- [bind9](./bind9.md)
