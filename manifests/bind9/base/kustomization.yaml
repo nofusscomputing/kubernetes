@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+namespace: bind
+
+
+resources:
+  - PVC-bind.yaml
+  - Deployment.yaml
+  - Service-bind.yaml
