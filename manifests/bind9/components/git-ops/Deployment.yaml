@@ -1,0 +1,86 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns
+spec:
+  template:
+
+    spec:
+
+      initContainers:
+
+        - name: git
+          image: alpine:3.23.2
+          command:
+            - sh
+            - -c
+            - |
+              apk add \
+                git \ 
+                openssh-client-default;
+
+              KEY_FILE_NAME="~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}/deploy";
+
+              echo ${SSH_PRIVATE_KEY} > ${SSH_REPOSITORY_NAME};
+
+              chmod 600 ${SSH_REPOSITORY_NAME};
+
+              export GIT_SSH_COMMAND="ssh -i ${KEY_FILE_NAME}";
+
+              if [ -d /data/git/.git ] then
+
+                git clone -b master ${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git /data/git;
+
+              else
+
+                cd /data/git;
+
+                git fetch -fpvt;
+
+                git pull --rebase
+
+              fi
+
+          env:
+            - name: SSH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_PRIVATE_KEY
+            - name: SSH_REPOSITORY_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_HOST
+            - name: SSH_REPOSITORY_OWNER
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_OWNER
+            - name: SSH_REPOSITORY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_NAME
+          resources:
+            limits:
+              cpu: 1
+              memory: 500Mi
+            requests:
+              cpu: 400m
+              memory: 800Mi
+
+          ports:
+            - containerPort: 53
+              name: dns-tcp
+              protocol: tcp
+            - containerPort: 53
+              name: dns-udp
+              protocol: udp
+
+          volumeMounts:
+            - name: data
+              mountPath: /etc/bind/conf.d/external
+              subPath: git/
