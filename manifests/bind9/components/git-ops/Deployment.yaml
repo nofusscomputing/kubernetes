@@ -48,7 +48,7 @@ spec:
 
                   echo "Clonning repo";
 
-                  git clone -b master ssh://${REPO_NAME_FULL} /git/source;
+                  git clone -b master git@${REPO_NAME_FULL} /git/source;
 
                 else
 
