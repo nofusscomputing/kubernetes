@@ -30,7 +30,7 @@ spec:
 
               while :; do
 
-                if [ -d /git/.git ] then
+                if [ -d /git/.git ]; then
 
                   git clone -b master ${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git /git;
 
