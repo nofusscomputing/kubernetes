@@ -17,6 +17,7 @@ spec:
             - sh
             - -c
             - |
+              apk update;
               apk add \
                 git \ 
                 openssh-client-default;
