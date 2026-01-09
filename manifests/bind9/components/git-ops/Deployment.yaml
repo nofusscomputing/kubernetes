@@ -48,29 +48,47 @@ spec:
 
                   echo "Env var REPO_NAME_FULL=[${REPO_NAME_FULL}] setup";
 
-                  echo "Clonning repo";
+                  if ssh -T "git@$SSH_REPOSITORY_HOST" -i  $KEY_FILE_PATH/deploy; then
 
-                  git clone -b master git@${REPO_NAME_FULL} /git/source;
+                    echo "Clonning repo";
+
+                    git clone -b master git@${REPO_NAME_FULL} /git/source;
+
+                  else
+
+                    echo "Not Authenticated, check ssh key. RC=[${?}]";
+
+                  fi
 
                 else
 
-                  echo "********************************************";
-
-                  git status;
-
-                  echo "********************************************";
                   cd /git/source;
 
-                  echo "Checking for repo updates";
+                  if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
 
-                  git fetch -fpvt;
+                    echo "********************************************";
 
-                  echo "Pulling any changes....";
+                    git status;
 
-                  git pull --rebase
+                    echo "********************************************";
+                    
+                    echo "Checking for repo updates";
+
+                    git fetch -fpvt;
+
+                    echo "Pulling any changes....";
+
+                    git pull --rebase
+
+                  else
+
+                    echo "Not Authenticated, check ssh key. RC=[${?}]";
+
+                  fi
 
                 fi
 
+                echo "Loop Finish.";
 
                 sleep 300
 
