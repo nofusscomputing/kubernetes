@@ -127,3 +127,7 @@ spec:
             - name: data
               mountPath: /git
               subPath: git/
+
+            - mountPath: /var/dns-log
+              name: data
+              subPath: logs
