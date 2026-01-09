@@ -28,7 +28,9 @@ spec:
 
               echo "Env var KEY_FILE_PATH=[${KEY_FILE_PATH}] setup";
 
-              echo ${SSH_PRIVATE_KEY} > ${KEY_FILE_PATH}/deploy;
+              cat > ${KEY_FILE_PATH}/deploy <<EOF
+              $SSH_PRIVATE_KEY
+              EOF
 
               chmod 600 ${KEY_FILE_PATH}/deploy;
 
