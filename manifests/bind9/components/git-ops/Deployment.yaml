@@ -22,15 +22,17 @@ spec:
               apk update;
               apk add git openssh-client-default;
 
-              KEY_FILE_NAME="~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}/deploy";
+              KEY_FILE_PATH="~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}";
 
-              echo "Env var KEY_FILE_NAME=[${KEY_FILE_NAME}] setup";
+              mkdir -p ${KEY_FILE_PATH};
 
-              echo ${SSH_PRIVATE_KEY} > ${KEY_FILE_NAME};
+              echo "Env var KEY_FILE_PATH=[${KEY_FILE_PATH}] setup";
 
-              chmod 600 ${KEY_FILE_NAME};
+              echo ${SSH_PRIVATE_KEY} > ${KEY_FILE_PATH}/deploy;
 
-              export GIT_SSH_COMMAND="ssh -i ${KEY_FILE_NAME}";
+              chmod 600 ${KEY_FILE_PATH}/deploy;
+
+              export GIT_SSH_COMMAND="ssh -i ${KEY_FILE_PATH}/deploy";
 
               while :; do
 
