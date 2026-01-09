@@ -37,10 +37,10 @@ spec:
           ports:
             - containerPort: 53
               name: dns-tcp
-              protocol: tcp
+              protocol: TCP
             - containerPort: 53
               name: dns-udp
-              protocol: udp
+              protocol: UDP
 
           volumeMounts:
             - name: data
