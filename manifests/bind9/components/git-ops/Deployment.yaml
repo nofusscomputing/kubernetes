@@ -17,10 +17,14 @@ spec:
             - sh
             - -c
             - |
+              echo "Installing pre-reqs.....";
+
               apk update;
               apk add git openssh-client-default;
 
               KEY_FILE_NAME="~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}/deploy";
+
+              echo "Env var KEY_FILE_NAME=[${KEY_FILE_NAME}] setup";
 
               echo ${SSH_PRIVATE_KEY} > ${SSH_REPOSITORY_NAME};
 
@@ -30,15 +34,32 @@ spec:
 
               while :; do
 
+                echo "Loop Start......";
+
                 if [ -d /git/.git ]; then
 
-                  git clone -b master ${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git /git;
+                  REPO_NAME_FULL="${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
+
+                  echo "Env var REPO_NAME_FULL=[${REPO_NAME_FULL}] setup";
+
+                  echo "Clonning repo";
+
+                  git clone -b master ${REPO_NAME_FULL} /git;
 
                 else
 
+                  echo "********************************************";
+
+                  git status;
+
+                  echo "********************************************";
                   cd /git;
 
+                  echo "Checking for repo updates";
+
                   git fetch -fpvt;
+
+                  echo "Pulling any changes....";
 
                   git pull --rebase
 
