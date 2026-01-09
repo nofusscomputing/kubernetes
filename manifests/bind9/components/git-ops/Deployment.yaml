@@ -36,7 +36,7 @@ spec:
 
                 echo "Loop Start......";
 
-                if [ -d /git/.git ]; then
+                if [ ! -d /git/.git ]; then
 
                   REPO_NAME_FULL="${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
 
