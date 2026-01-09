@@ -42,7 +42,7 @@ spec:
 
                 if [ ! -d /git/source/.git ]; then
 
-                  REPO_NAME_FULL="${SSH_REPOSITORY_HOST}:${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
+                  export REPO_NAME_FULL="${SSH_REPOSITORY_HOST}:${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
 
                   echo "Env var REPO_NAME_FULL=[${REPO_NAME_FULL}] setup";
 
