@@ -24,69 +24,44 @@ spec:
 
               export KEY_FILE_PATH=~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME};
 
-              mkdir -p "${KEY_FILE_PATH}";
-
-              echo "Env var KEY_FILE_PATH=[${KEY_FILE_PATH}] setup";
-
-              cat > ${KEY_FILE_PATH}/deploy <<EOF
-              $SSH_PRIVATE_KEY
-              EOF
-
               chmod 600 ${KEY_FILE_PATH}/deploy;
 
               export GIT_SSH_COMMAND="ssh -i $KEY_FILE_PATH/deploy";
-
-              ssh-keyscan "${SSH_REPOSITORY_HOST}" >> ~/.ssh/known_hosts
 
               while :; do
 
                 echo "Loop Start......";
 
-                if [ ! -d /git/source/.git ]; then
 
-                  export REPO_NAME_FULL="${SSH_REPOSITORY_HOST}:${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
+                cd /git;
 
-                  echo "Env var REPO_NAME_FULL=[${REPO_NAME_FULL}] setup";
+                if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
 
-                  if ssh -T "git@$SSH_REPOSITORY_HOST" -i  $KEY_FILE_PATH/deploy; then
+                  echo "********************************************";
 
-                    echo "Clonning repo";
+                  git status;
 
-                    git clone -b master git@${REPO_NAME_FULL} /git/source;
+                  echo "********************************************";
+                  
+                  echo "Checking for repo updates";
 
-                  else
+                  git fetch -fpvt;
 
-                    echo "Not Authenticated, check ssh key. RC=[${?}]";
+                  echo "Git reset....";
 
-                  fi
+                  git reset --hard;
+
+                  echo "Pulling any changes....";
+
+                  git pull --rebase
 
                 else
 
-                  cd /git/source;
-
-                  if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
-
-                    echo "********************************************";
-
-                    git status;
-
-                    echo "********************************************";
-                    
-                    echo "Checking for repo updates";
-
-                    git fetch -fpvt;
-
-                    echo "Pulling any changes....";
-
-                    git pull --rebase
-
-                  else
-
-                    echo "Not Authenticated, check ssh key. RC=[${?}]";
-
-                  fi
+                  echo "Not Authenticated, check ssh key. RC=[${?}]";
 
                 fi
+
+
 
                 echo "Loop Finish.";
 
@@ -115,6 +90,11 @@ spec:
                 secretKeyRef:
                   name: bind-config
                   key: SSH_REPOSITORY_NAME
+            - name: SSH_REPOSITORY_REF
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_REF
 
           resources:
             limits:
@@ -128,6 +108,144 @@ spec:
               mountPath: /git
               subPath: git/
 
+            - name: data
+              mountPath: /root
+              subPath: home
+
             - mountPath: /var/dns-log
               name: data
               subPath: logs
+
+      initContainers:
+
+        - name: clone
+          image: alpine:3.23.2
+          command:
+            - sh
+            - -c
+            - |
+              echo "Start init";
+
+
+              echo "Installing pre-reqs.....";
+
+              apk update;
+              apk add git openssh-client-default;
+
+              export KEY_FILE_PATH=~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME};
+
+              mkdir -p "${KEY_FILE_PATH}";
+
+              echo "Env var KEY_FILE_PATH=[${KEY_FILE_PATH}] setup";
+
+              echo "$SSH_PRIVATE_KEY" > ${KEY_FILE_PATH}/deploy
+
+
+              chmod 600 ${KEY_FILE_PATH}/deploy;
+
+              export GIT_SSH_COMMAND="ssh -i $KEY_FILE_PATH/deploy";
+
+              ssh-keyscan "${SSH_REPOSITORY_HOST}" >> ~/.ssh/known_hosts
+
+
+              export REPO_NAME_FULL="${SSH_REPOSITORY_HOST}:${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
+
+              echo "Env var REPO_NAME_FULL=[${REPO_NAME_FULL}] setup";
+
+
+              if [ ! -d /git/.git ]; then
+
+
+                if ssh -T "git@$SSH_REPOSITORY_HOST" -i  $KEY_FILE_PATH/deploy; then
+
+                  echo "Clonning repo on branch=[${SSH_REPOSITORY_REF}]";
+
+                  git clone -b "${SSH_REPOSITORY_REF}" git@${REPO_NAME_FULL} /git;
+
+                else
+
+                  echo "Not Authenticated, check ssh key. RC=[${?}]";
+
+                  exit 1;
+
+                fi
+
+              else
+
+
+                cd /git;
+
+                if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
+
+                  echo "********************************************";
+
+                  git status;
+
+                  echo "********************************************";
+                  
+                  echo "Checking for repo updates";
+
+                  git fetch -fpvt;
+
+                  echo "Git reset....";
+
+                  git reset --hard;
+
+                  echo "Pulling any changes....";
+
+                  git pull --rebase
+
+                else
+
+                  echo "Not Authenticated, check ssh key. RC=[${?}]";
+
+                fi
+
+
+              fi
+
+              echo "Finish init";
+
+          env:
+            - name: SSH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_PRIVATE_KEY
+            - name: SSH_REPOSITORY_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_HOST
+            - name: SSH_REPOSITORY_OWNER
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_OWNER
+            - name: SSH_REPOSITORY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_NAME
+            - name: SSH_REPOSITORY_REF
+              valueFrom:
+                secretKeyRef:
+                  name: bind-config
+                  key: SSH_REPOSITORY_REF
+
+          resources:
+            limits:
+              cpu: 1
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              memory: 150Mi
+
+          volumeMounts:
+            - name: data
+              mountPath: /git
+              subPath: git
+
+            - name: data
+              mountPath: /root
+              subPath: home

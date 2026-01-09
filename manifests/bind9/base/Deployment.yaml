@@ -67,9 +67,6 @@ spec:
               name: data
               subPath: logs
 
-            - mountPath: /root
-              name: home
-
       priorityClassName: cluster-low
       tolerations: []
       volumes:
@@ -77,7 +74,3 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: bind
-
-        - name: home
-          emptyDir:
-            medium: Memory

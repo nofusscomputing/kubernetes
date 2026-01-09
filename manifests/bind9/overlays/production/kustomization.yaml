@@ -14,4 +14,4 @@ namespace: dns
 images:
   - name: nofusscomputing/bind
     newName: harbor.earth.nww/docker/nofusscomputing/bind
-    newTag: '1.0.0-rc2'
+    newTag: '1.0.0-rc3'
