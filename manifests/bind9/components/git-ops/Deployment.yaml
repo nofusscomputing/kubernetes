@@ -34,6 +34,8 @@ spec:
 
               export GIT_SSH_COMMAND="ssh -i $KEY_FILE_PATH/deploy";
 
+              ssh-keyscan "${SSH_REPOSITORY_HOST}" >> ~/.ssh/known_hosts
+
               while :; do
 
                 echo "Loop Start......";
