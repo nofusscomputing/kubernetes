@@ -77,14 +77,6 @@ spec:
               cpu: 50m
               memory: 800Mi
 
-          ports:
-            - containerPort: 53
-              name: dns-tcp
-              protocol: tcp
-            - containerPort: 53
-              name: dns-udp
-              protocol: udp
-
           volumeMounts:
             - name: data
               mountPath: /git
