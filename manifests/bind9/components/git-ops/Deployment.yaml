@@ -9,7 +9,7 @@ spec:
 
     spec:
 
-      initContainers:
+      containers:
 
         - name: git
           image: alpine:3.23.2
