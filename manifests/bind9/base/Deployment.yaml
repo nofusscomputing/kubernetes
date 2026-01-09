@@ -49,12 +49,9 @@ spec:
             - name: data
               mountPath: /etc/bind/conf.d/acl
               subPath: git/conf/conf.d/acl
-            - name: /git/conf/conf.d/internal
+            - name: data
               mountPath: /etc/bind/conf.d/internal
               subPath: git/conf/conf.d/internal
-
-            - name: run
-              mountPath: /run
 
             - name: data
               mountPath: /var/bind/dyn
