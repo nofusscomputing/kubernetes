@@ -36,7 +36,7 @@ spec:
 
                 echo "Loop Start......";
 
-                if [ ! -d /git/.git ]; then
+                if [ ! -d /git/source/.git ]; then
 
                   REPO_NAME_FULL="${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
 
@@ -44,7 +44,7 @@ spec:
 
                   echo "Clonning repo";
 
-                  git clone -b master ${REPO_NAME_FULL} /git;
+                  git clone -b master ${REPO_NAME_FULL} /git/source;
 
                 else
 
@@ -53,7 +53,7 @@ spec:
                   git status;
 
                   echo "********************************************";
-                  cd /git;
+                  cd /git/source;
 
                   echo "Checking for repo updates";
 
