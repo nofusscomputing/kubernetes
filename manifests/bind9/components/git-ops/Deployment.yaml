@@ -29,19 +29,23 @@ spec:
 
               export GIT_SSH_COMMAND="ssh -i ${KEY_FILE_NAME}";
 
-              if [ -d /data/git/.git ] then
+              while :; do
 
-                git clone -b master ${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git /data/git;
+                if [ -d /git/.git ] then
 
-              else
+                  git clone -b master ${SSH_REPOSITORY_HOST}/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git /git;
 
-                cd /data/git;
+                else
 
-                git fetch -fpvt;
+                  cd /git;
 
-                git pull --rebase
+                  git fetch -fpvt;
 
-              fi
+                  git pull --rebase
+
+                fi
+
+              done;
 
           env:
             - name: SSH_PRIVATE_KEY
@@ -64,6 +68,7 @@ spec:
                 secretKeyRef:
                   name: bind-config
                   key: SSH_REPOSITORY_NAME
+
           resources:
             limits:
               cpu: 1
