@@ -22,9 +22,9 @@ spec:
               apk update;
               apk add git openssh-client-default;
 
-              KEY_FILE_PATH="~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}";
+              KEY_FILE_PATH=~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME};
 
-              mkdir -p ${KEY_FILE_PATH};
+              mkdir -p "${KEY_FILE_PATH}";
 
               echo "Env var KEY_FILE_PATH=[${KEY_FILE_PATH}] setup";
 
