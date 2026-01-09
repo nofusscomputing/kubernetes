@@ -45,27 +45,30 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /etc/bind/conf.d/external
-              subPath: /git/conf/conf.d/external
+              subPath: git/conf/conf.d/external
             - name: data
               mountPath: /etc/bind/conf.d/acl
-              subPath: /git/conf/conf.d/acl
+              subPath: git/conf/conf.d/acl
             - name: /git/conf/conf.d/internal
               mountPath: /etc/bind/conf.d/internal
-              subPath: /git/conf/conf.d/internal
+              subPath: git/conf/conf.d/internal
+
+            - name: run
+              mountPath: /run
 
             - name: data
               mountPath: /var/bind/dyn
-              subPath: /git/zones/dyn
+              subPath: git/zones/dyn
             - name: data
               mountPath: /var/bind/pri
-              subPath: /git/zones/pri
+              subPath: git/zones/pri
             - name: data
               mountPath: /var/bind/sec
-              subPath: /git/zones/sec
+              subPath: git/zones/sec
 
             - mountPath: /var/log
               name: data
-              subPath: /logs
+              subPath: logs
 
       priorityClassName: cluster-low
       tolerations: []
