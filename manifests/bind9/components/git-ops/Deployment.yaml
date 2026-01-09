@@ -18,9 +18,7 @@ spec:
             - -c
             - |
               apk update;
-              apk add \
-                git \ 
-                openssh-client-default;
+              apk add git openssh-client-default;
 
               KEY_FILE_NAME="~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}/deploy";
 
