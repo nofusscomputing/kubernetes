@@ -37,6 +37,8 @@ spec:
 
                 if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
 
+                  echo "Updating repo on SSH_REPOSITORY_REF=[${SSH_REPOSITORY_REF}]";
+
                   echo "********************************************";
 
                   git status;
@@ -51,9 +53,26 @@ spec:
 
                   git reset --hard;
 
-                  echo "Pulling any changes....";
+                  if [ "${SSH_REPOSITORY_REF:-}" = "tag" ]; then
 
-                  git pull --rebase
+                    echo "'tag' or nothing supplied for variable SSH_REPOSITORY_REF, fetching latest git tag to use.";
+
+                    SSH_REPOSITORY_REF=$(git ls-remote --tags --sort=-v:refname git@${REPO_NAME_FULL} | sed 's#.*/##' | grep -v '\^{}' | head -n 1);
+
+                    echo "Using SSH_REPOSITORY_REF=[${SSH_REPOSITORY_REF}]";
+
+                    git checkout "${SSH_REPOSITORY_REF}"
+
+                  else
+
+                    git checkout "${SSH_REPOSITORY_REF}"
+
+                    echo "Pulling any changes....";
+
+                    git pull --rebase
+
+                  fi
+
 
                 else
 
@@ -160,6 +179,15 @@ spec:
 
                   echo "Clonning repo on branch=[${SSH_REPOSITORY_REF}]";
 
+                  if [ "${SSH_REPOSITORY_REF}"=="tag" ]; then
+
+                    echo "'tag' or nothing supplied for variable SSH_REPOSITORY_REF, fetching latest git tag to use.";
+
+                    SSH_REPOSITORY_REF=$(git ls-remote --tags --sort=-v:refname git@${REPO_NAME_FULL} | sed 's#.*/##' | grep -v '\^{}' | head -n 1)
+
+                  fi
+
+
                   git clone -b "${SSH_REPOSITORY_REF}" git@${REPO_NAME_FULL} /git;
 
                 else
@@ -177,6 +205,8 @@ spec:
 
                 if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
 
+                  echo "Updating repo on SSH_REPOSITORY_REF=[${SSH_REPOSITORY_REF}]";
+
                   echo "********************************************";
 
                   git status;
@@ -191,9 +221,27 @@ spec:
 
                   git reset --hard;
 
-                  echo "Pulling any changes....";
 
-                  git pull --rebase
+                  if [ "${SSH_REPOSITORY_REF:-}" = "tag" ]; then
+
+                    echo "'tag' or nothing supplied for variable SSH_REPOSITORY_REF, fetching latest git tag to use.";
+
+                    SSH_REPOSITORY_REF=$(git ls-remote --tags --sort=-v:refname git@${REPO_NAME_FULL} | sed 's#.*/##' | grep -v '\^{}' | head -n 1)
+
+                    echo "Using SSH_REPOSITORY_REF=[${SSH_REPOSITORY_REF}]";
+
+                    git checkout "${SSH_REPOSITORY_REF}"
+
+                  else
+
+                    git checkout "${SSH_REPOSITORY_REF}"
+
+                    echo "Pulling any changes....";
+
+                    git pull --rebase
+
+                  fi
+
 
                 else
 
@@ -203,6 +251,7 @@ spec:
 
 
               fi
+
 
               echo "Finish init";
 
