@@ -4,8 +4,8 @@ kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/component: rndc-conf
-    app.kubernetes.io/name: dns
-    app.kubernetes.io/part-of: bind9
+    app.kubernetes.io/name: bind
+    app.kubernetes.io/part-of: bind
   name: rndc-conf
 data:
   rndc.conf: |

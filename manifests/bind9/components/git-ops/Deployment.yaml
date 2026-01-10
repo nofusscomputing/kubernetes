@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dns
+  name: bind
 spec:
   template:
 
@@ -180,9 +180,6 @@ spec:
 
               apk update;
               apk add bind git openssh-client-default;
-
-
-              echo "Generating rndc key...";
 
               if [ -d /etc/bind/conf.d/extra ]; then
 
