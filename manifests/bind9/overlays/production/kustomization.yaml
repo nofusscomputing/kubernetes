@@ -11,11 +11,12 @@ resources:
 #   - ../../components/extra-conf
 #   - ../../components/git-ops
 #   - ../../components/rndc
+#   - ../../components/dns-over-http
+#   - ../../components/dns-over-tls
 
 namespace: dns
 
 
 images:
   - name: nofusscomputing/bind
-    newName: harbor.earth.nww/docker/nofusscomputing/bind
-    newTag: '1.0.0-rc4'
+    newTag: '1.0.0'
