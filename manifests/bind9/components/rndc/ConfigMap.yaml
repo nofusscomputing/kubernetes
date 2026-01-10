@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: rndc-conf
+    app.kubernetes.io/name: dns
+    app.kubernetes.io/part-of: bind9
+  name: rndc-conf
+data:
+  rndc.conf: |
+    include "/etc/bind/keys/rndc.key";
+
+    controls {
+        inet 127.0.0.1 port 953
+            allow { 127.0.0.1; } keys { "rndc-key"; };
+    };

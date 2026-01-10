@@ -20,7 +20,7 @@ spec:
               echo "Installing pre-reqs.....";
 
               apk update;
-              apk add git openssh-client-default;
+              apk add bind git openssh-client-default;
 
               export KEY_FILE_PATH=~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME};
 
@@ -34,6 +34,8 @@ spec:
 
 
                 cd /git;
+
+                chown 0:0 -R /git/.git
 
                 if ssh -T "git@$SSH_REPOSITORY_HOST" -i $KEY_FILE_PATH/deploy; then
 
@@ -57,21 +59,19 @@ spec:
 
                     echo "'tag' or nothing supplied for variable SSH_REPOSITORY_REF, fetching latest git tag to use.";
 
-                    SSH_REPOSITORY_REF=$(git ls-remote --tags --sort=-v:refname git@${REPO_NAME_FULL} | sed 's#.*/##' | grep -v '\^{}' | head -n 1);
+                    export REPO_NAME_FULL="${SSH_REPOSITORY_HOST}:${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME}.git"
+
+                    export SSH_REPOSITORY_REF=$(git ls-remote --tags --sort=-v:refname git@${REPO_NAME_FULL} | sed 's#.*/##' | grep -v '\^{}' | head -n 1);
 
                     echo "Using SSH_REPOSITORY_REF=[${SSH_REPOSITORY_REF}]";
 
-                    git checkout "${SSH_REPOSITORY_REF}"
-
-                  else
-
-                    git checkout "${SSH_REPOSITORY_REF}"
-
-                    echo "Pulling any changes....";
-
-                    git pull --rebase
-
                   fi
+
+                  git checkout "${SSH_REPOSITORY_REF}";
+
+                  echo "Pulling any changes....";
+
+                  git pull --rebase
 
 
                 else
@@ -80,6 +80,27 @@ spec:
 
                 fi
 
+
+                chown 53:53 -R /etc/bind
+
+                chown 53:53 -R /var/bind
+
+              if [ -d /etc/bind/conf.d/extra ]; then
+
+                if [ -f /etc/bind/conf.d/extra/rndc.conf ]; then
+
+                  echo "********************************************";
+
+                  echo "Reloading zones.....";
+
+                  rndc -4 -k /etc/bind/keys/rndc.key -s 127.0.0.1 -r reload
+
+                  echo "********************************************";
+
+
+                fi
+
+              fi
 
 
                 echo "Loop Finish.";
@@ -123,6 +144,15 @@ spec:
               cpu: 50m
               memory: 150Mi
           volumeMounts:
+
+            - name: data
+              mountPath: /etc/bind/conf.d/extra
+              subPath: extra/
+
+            - name: data
+              mountPath: /etc/bind/keys
+              subPath: keys/
+
             - name: data
               mountPath: /git
               subPath: git/
@@ -149,7 +179,28 @@ spec:
               echo "Installing pre-reqs.....";
 
               apk update;
-              apk add git openssh-client-default;
+              apk add bind git openssh-client-default;
+
+
+              echo "Generating rndc key...";
+
+              if [ -d /etc/bind/conf.d/extra ]; then
+
+                if [ -f /etc/bind/conf.d/extra/rndc.conf ]; then
+
+
+                  echo "********************************************";
+
+                  echo "Generating rndc key....";
+
+                  rndc-confgen -a -c /etc/bind/keys/rndc.key;
+
+                  echo "********************************************";
+
+                fi
+
+              fi
+
 
               export KEY_FILE_PATH=~/.ssh/${SSH_REPOSITORY_OWNER}/${SSH_REPOSITORY_NAME};
 
@@ -291,6 +342,15 @@ spec:
               memory: 150Mi
 
           volumeMounts:
+
+            - name: data
+              mountPath: /etc/bind/conf.d/extra
+              subPath: extra/
+
+            - name: data
+              mountPath: /etc/bind/keys
+              subPath: keys/
+
             - name: data
               mountPath: /git
               subPath: git

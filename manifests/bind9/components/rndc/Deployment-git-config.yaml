@@ -1,0 +1,20 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns
+spec:
+  template:
+
+    spec:
+
+      containers:
+
+        - name: git
+
+          volumeMounts:
+
+            - name: data
+              mountPath: /etc/bind/conf.d/extra
+              subPath: extra/
