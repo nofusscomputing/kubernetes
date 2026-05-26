@@ -3,7 +3,14 @@ apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 
 
+resources:
+  - ConfigMap.yaml
+
+
 patches:
 
   - path: Deployment.yaml
-  
+
+  - path: Deployment-git-config.yaml
+
+  - path: Service-bind.yaml

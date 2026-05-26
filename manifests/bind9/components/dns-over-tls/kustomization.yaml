@@ -6,4 +6,5 @@ kind: Component
 patches:
 
   - path: Deployment.yaml
-  
+
+  - path: Service-bind.yaml

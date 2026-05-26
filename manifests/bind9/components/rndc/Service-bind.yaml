@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bind
+spec:
+
+  ports:
+    - name: rndc
+      port: 953
+      protocol: TCP
+      targetPort: rndc

@@ -4,27 +4,27 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/component: bind9
-    app.kubernetes.io/name: dns
-  name: dns
+    app.kubernetes.io/name: bind
+    app.kubernetes.io/part-of: bind
+  name: bind
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: bind9
-      app.kubernetes.io/name: dns
+      app.kubernetes.io/name: bind
+      app.kubernetes.io/part-of: bind
   replicas: 1
   minReadySeconds: 10
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: bind9
-        app.kubernetes.io/name: dns
+        app.kubernetes.io/name: bind
+        app.kubernetes.io/part-of: bind
     spec:
       terminationGracePeriodSeconds: 10
       affinity: {}
       containers:
 
-        - name: dns
+        - name: bind
           image: nofusscomputing/bind:dev
           resources:
             limits:
@@ -37,32 +37,35 @@ spec:
           ports:
             - containerPort: 53
               name: dns-tcp
-              protocol: tcp
+              protocol: TCP
             - containerPort: 53
               name: dns-udp
-              protocol: udp
+              protocol: UDP
 
           volumeMounts:
             - name: data
               mountPath: /etc/bind/conf.d/external
-              subPath: /git/conf/conf.d/external
-            - name: /git/conf/conf.d/internal
+              subPath: git/conf/conf.d/external
+            - name: data
+              mountPath: /etc/bind/conf.d/acl
+              subPath: git/conf/conf.d/acl
+            - name: data
               mountPath: /etc/bind/conf.d/internal
-              subPath: /git/conf/conf.d/internal
+              subPath: git/conf/conf.d/internal
 
             - name: data
               mountPath: /var/bind/dyn
-              subPath: /git/zones/dyn
+              subPath: git/zones/dyn
             - name: data
               mountPath: /var/bind/pri
-              subPath: /git/zones/pri
+              subPath: git/zones/pri
             - name: data
               mountPath: /var/bind/sec
-              subPath: /git/zones/sec
+              subPath: git/zones/sec
 
             - mountPath: /var/log
               name: data
-              subPath: /logs
+              subPath: logs
 
       priorityClassName: cluster-low
       tolerations: []

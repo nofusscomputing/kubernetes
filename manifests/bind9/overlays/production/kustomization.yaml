@@ -7,6 +7,12 @@ kind: Kustomization
 resources:
   - ../../base
 
+# components:
+#   - ../../components/extra-conf
+#   - ../../components/git-ops
+#   - ../../components/rndc
+#   - ../../components/dns-over-http
+#   - ../../components/dns-over-tls
 
 namespace: dns
 

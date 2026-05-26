@@ -3,8 +3,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    app.kubernetes.io/component: bind9
-    app.kubernetes.io/name: dns
+    app.kubernetes.io/name: bind
+    app.kubernetes.io/part-of: bind
   name: bind
 spec:
   volumeMode: Filesystem

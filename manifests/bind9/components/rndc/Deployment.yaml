@@ -1,0 +1,30 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind
+spec:
+
+  template:
+
+    spec:
+
+      containers:
+
+        - name: bind
+
+          ports:
+            - containerPort: 953
+              name: rndc
+              protocol: TCP
+
+          volumeMounts:
+
+            - name: data
+              mountPath: /etc/bind/keys
+              subPath: keys/
+
+            - name: data
+              mountPath: /etc/bind/conf.d/extra
+              subPath: extra/
