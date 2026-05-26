@@ -4,7 +4,7 @@ DEBUG = False
 #   {'disable_downloading': False},
 # ]
 
-METRICS_ENABLED = True
+METRICS_ENABLED = False
 # PROMETHEUS_EXPORT_MIGRATIONS = True
 
 AUTH_PASSWORD_VALIDATORS = []
