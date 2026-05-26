@@ -11,7 +11,7 @@ namespace: centurion
 secretGenerator:
   - name: social_auth_keycloak
     files:
-      - social_auth_keycloak.py
+      - 70.social_auth_keycloak.py
 
 patches:
 
