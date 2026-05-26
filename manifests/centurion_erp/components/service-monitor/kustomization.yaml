@@ -2,7 +2,65 @@
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 
+configMapGenerator:
+  - name: configuration
+    behavior: merge
+    files:
+      - 99.enable-metrics.py
+
 resources:
   - Service-worker.yaml
   - ServiceMonitor-api.yaml
   - ServiceMonitor-worker.yaml
+
+patches:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: api
+      spec:
+        template:
+          spec:
+            containers:
+              - name: web
+                ports:
+                  - containerPort: 8080
+                    name: metrics
+    target:
+      kind: Deployment
+      name: api
+      version: v1
+
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: worker
+      spec:
+        template:
+          spec:
+            containers:
+              - name: worker
+                ports:
+                  - containerPort: 8080
+                    name: metrics
+    target:
+      kind: Deployment
+      name: worker
+      version: v1
+
+  - patch: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: centurion
+      spec:
+        ports:
+          - name: metrics
+            port: 8080
+            targetPort: metrics
+    target:
+      kind: Service
+      name: centurion
+      version: v1
