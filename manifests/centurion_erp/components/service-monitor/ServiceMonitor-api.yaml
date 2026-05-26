@@ -1,0 +1,20 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: service-monitor
+    app.kubernetes.io/name: centurion
+    app.kubernetes.io/part-of: centurion-erp
+  name: api
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+    relabelings:
+      - targetLabel: "job"
+        replacement: "django"
+  selector:
+    matchLabels:
+    app.kubernetes.io/name: centurion
+    app.kubernetes.io/part-of: centurion-erp
