@@ -5,9 +5,9 @@ kind: Kustomization
 configMapGenerator:
   - name: configuration
     files:
-      - csrf.py
-      - settings.py
-      - ui-redirect.py
+      - 80.csrf.py
+      - 00.settings.py
+      - 15.ui-redirect.py
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -41,12 +41,12 @@ resources:
 secretGenerator:
   - name: secret_key
     files:
-      - secret_key.py
+      - 90.secret_key.py
 
   - name: celery-broker
     files:
-      - celery-broker.py
+      - 10.celery-broker.py
 
   - name: database
     files:
-      - database.py
+      - 20.database.py
