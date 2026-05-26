@@ -36,8 +36,13 @@ stringData:
   SSH_REPOSITORY_HOST: -dns hostname of git provider-
   SSH_REPOSITORY_OWNER: -repository owner-
   SSH_REPOSITORY_NAME: -repository name-
+  SSH_REPOSITORY_REF: -value-    # Branch name or use value `tag` to fetch the latest git tag.
 
 ```
+
+Expected layout for the repository is as follows:
+
+
 
 ### Overlays
 
