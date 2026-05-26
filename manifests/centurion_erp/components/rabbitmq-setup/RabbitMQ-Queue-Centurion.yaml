@@ -1,0 +1,18 @@
+---
+
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  labels:
+    app.kubernetes.io/component: message-queuing
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: centurion-erp
+  name: queue-centurion
+spec:
+  name: centurion
+  autoDelete: false
+  durable: true
+  rabbitmqClusterReference:
+    name: main
+    namespace: rabbitmq
+  vhost: centurion
