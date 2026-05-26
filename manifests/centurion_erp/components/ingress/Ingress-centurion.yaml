@@ -1,0 +1,79 @@
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/common-name: example.com
+    cert-manager.io/duration: 2160h
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-rotation-policy: Always
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/subject-countries: N/A
+    cert-manager.io/subject-organizationalunits: N/A
+    cert-manager.io/subject-organizations: N/A
+    cert-manager.io/subject-provinces: N/A
+  labels:
+    app.kubernetes.io/component: Ingress
+    app.kubernetes.io/name: centurion
+    app.kubernetes.io/part-of: centurion-erp
+  name: centurion
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: api
+            path: /account/
+            pathType: Prefix
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: api
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: api
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: api
+            path: /sso/
+            pathType: Prefix
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: api
+            path: /static/
+            pathType: Prefix
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: api
+            path: /robots.txt
+            pathType: Exact
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: ui
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+      - example.com
+      secretName: certificate-tls-centurion
