@@ -1,0 +1,22 @@
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - RabbitMQ-Permission-Centurion.yaml
+  - RabbitMQ-Queue-Centurion.yaml
+  - RabbitMQ-User-Centurion.yaml
+  - RabbitMQ-VHost-Centurion.yaml
+
+secretGenerator:
+  - name: user-centurion
+    options:
+       labels:
+        app.kubernetes.io/component: message-queuing
+        app.kubernetes.io/name: rabbitmq
+        app.kubernetes.io/part-of: centurion-erp
+    envs:
+      - user-centurion.env
