@@ -42,19 +42,8 @@ spec:
 
           volumeMounts:
 
-            - name: celery-broker
-              mountPath: /etc/itsm/10.celery-broker.py
-              subPath: 10.celery-broker.py
-              readOnly: true
-
             - name: configuration
-              mountPath: /etc/itsm/00.settings.py
-              subPath: 00.settings.py
-              readOnly: true
-
-            - name: database
-              mountPath: /etc/itsm/20.database.py
-              subPath: 20.database.py
+              mountPath: /etc/itsm
               readOnly: true
 
             - mountPath: /var/log
@@ -67,26 +56,24 @@ spec:
       tolerations: []
       volumes:
 
-        - name: celery-broker
-          secret:
-            secretName: celery-broker
-            items:
-              - key: 10.celery-broker.py
-                path: 10.celery-broker.py
-
         - name: configuration
-          configMap:
-            name: configuration
-            items:
-              - key: 00.settings.py
-                path: 00.settings.py
-
-        - name: database
-          secret:
-            secretName: database
-            items:
-              - key: 20.database.py
-                path: 20.database.py
+          projected:
+            sources:
+              - configMap:
+                  name: configuration
+                  items:
+                    - key: 00.settings.py
+                      path: 00.settings.py
+              - secret:
+                  name: celery-broker
+                  items:
+                    - key: 10.celery-broker.py
+                      path: 10.celery-broker.py
+              - secret:
+                  name: database
+                  items:
+                    - key: 20.database.py
+                      path: 20.database.py
 
         - name: logs
           hostPath:

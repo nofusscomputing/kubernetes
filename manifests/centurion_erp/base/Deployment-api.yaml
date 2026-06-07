@@ -26,9 +26,6 @@ spec:
 
         - name: web
           image: nofusscomputing/centurion-erp:dev
-          env:
-            - name: PROMETHEUS_MULTIPROC_DIR
-              value: '/tmp/prometheus'
           resources:
             limits:
               cpu: 1
@@ -43,11 +40,6 @@ spec:
 
           volumeMounts:
 
-            - name: celery-broker
-              mountPath: /etc/itsm/10.celery-broker.py
-              subPath: 10.celery-broker.py
-              readOnly: true
-
             - name: configuration
               mountPath: /etc/itsm
               readOnly: true
@@ -55,11 +47,6 @@ spec:
             - name: data
               mountPath: /data
               subPath: data
-
-            - name: database
-              mountPath: /etc/itsm/20.database.py
-              subPath: 20.database.py
-              readOnly: true
 
             - mountPath: /var/log
               name: logs
@@ -86,31 +73,35 @@ spec:
 
           volumeMounts: []
 
-      priorityClassName: cluster-low
       tolerations: []
       volumes:
 
-        - name: celery-broker
-          secret:
-            secretName: celery-broker
-            items:
-              - key: 10.celery-broker.py
-                path: 10.celery-broker.py
-
         - name: configuration
-          configMap:
-            name: configuration
+          projected:
+            sources:
+              - configMap:
+                  name: configuration
+                  items:
+                    - key: 00.settings.py
+                      path: 00.settings.py
+                    - key: 15.ui-redirect.py
+                      path: 15.ui-redirect.py
+                    - key: 80.csrf.py
+                      path: 80.csrf.py
+              - secret:
+                  name: celery-broker
+                  items:
+                    - key: 10.celery-broker.py
+                      path: 10.celery-broker.py
+              - secret:
+                  name: database
+                  items:
+                    - key: 20.database.py
+                      path: 20.database.py
 
         - name: data
           persistentVolumeClaim:
             claimName: centurion
-
-        - name: database
-          secret:
-            secretName: database
-            items:
-              - key: 20.database.py
-                path: 20.database.py
 
         - name: logs
           hostPath:
