@@ -9,7 +9,7 @@ generatorOptions:
 namespace: centurion
 
 secretGenerator:
-  - name: social_auth_keycloak
+  - name: social-auth-keycloak
     files:
       - 70.social_auth_keycloak.py
 
@@ -17,22 +17,10 @@ patches:
 
   - patch: |-
       - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
+        path: /spec/template/spec/volumes/0/projected/sources/-
         value:
-          name: social-auth-keycloak
-          mountPath: /etc/itsm/social_auth_keycloak.py
-          subPath: social_auth_keycloak.py
-          readOnly: true
-
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: social-auth-keycloak
-          configMap:
+          secret:
             name: social-auth-keycloak
-            items:
-              - key: social_auth_keycloak.py
-                path: social_auth_keycloak.py
 
     target:
       kind: Deployment

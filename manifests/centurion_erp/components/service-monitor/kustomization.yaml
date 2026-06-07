@@ -33,6 +33,28 @@ patches:
       version: v1
 
   - patch: |-
+      - op: add
+        path: /spec/template/spec/volumes/0/projected/sources/0/configMap/items/-
+        value:
+          key: 99.enable-metrics.py
+          path: 99.enable-metrics.py
+    target:
+      kind: Deployment
+      name: api
+      version: v1
+
+  - patch: |-
+      - op: add
+        path: /spec/template/spec/volumes/0/projected/sources/0/configMap/items/-
+        value:
+          key: 99.enable-metrics.py
+          path: 99.enable-metrics.py
+    target:
+      kind: Deployment
+      name: worker
+      version: v1
+
+  - patch: |-
       apiVersion: apps/v1
       kind: Deployment
       metadata:

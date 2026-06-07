@@ -5,9 +5,9 @@ kind: Kustomization
 configMapGenerator:
   - name: configuration
     files:
-      - 80.csrf.py
       - 00.settings.py
       - 15.ui-redirect.py
+      - 80.csrf.py
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -39,7 +39,7 @@ resources:
   - Service-api.yaml
 
 secretGenerator:
-  - name: secret_key
+  - name: secret-key
     files:
       - 90.secret_key.py
 
