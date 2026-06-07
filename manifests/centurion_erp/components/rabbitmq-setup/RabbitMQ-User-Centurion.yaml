@@ -1,0 +1,17 @@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: User
+metadata:
+  labels:
+    app.kubernetes.io/component: message-queuing
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: centurion-erp
+  name: centurion
+spec:
+  importCredentialsSecret:
+    name: user-centurion
+  tags:
+    - policymaker
+  rabbitmqClusterReference:
+    name: main
+    namespace: rabbitmq
