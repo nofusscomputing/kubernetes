@@ -33,5 +33,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-      - example.com
+        - example.com
       secretName: certificate-tls-centurion-ui
