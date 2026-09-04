@@ -1,0 +1,49 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# components:
+#   - ../../components/ingress
+
+images:
+  # this image is intended to be kept up to date with the current release tag.
+  - name: nofusscomputing/centurion-erp-ui
+    newTag: 539d15bb05d8a20fcae8ab08f257e3be9afeab41
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/instance: cluster
+
+  - pairs:
+      app.kubernetes.io/version: v1.30.1
+
+namespace: centurion-ui
+
+# patches:
+#   - patch: |-
+
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1cluster-issuer
+#         value: cluster
+
+#       - op: replace
+#         path: /metadata/annotations/cert-manager.io~1common-name
+#         value: sub-domain.domain.tld
+
+#       - op: replace
+#         path: /spec/rules/0/host
+#         value: sub-domain.domain.tld
+
+#       - op: replace
+#         path: /spec/tls/0/hosts/0
+#         value: sub-domain.domain.tld
+#     target:
+#       kind: Ingress
+#       name: centurion-ui
+#       version: v1
+
+
+resources:
+  - ../../base
