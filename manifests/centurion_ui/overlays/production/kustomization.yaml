@@ -8,7 +8,7 @@ kind: Kustomization
 
 images:
   # this image is intended to be kept up to date with the current release tag.
-  - name: nofusscomputing/centurion-erp-ui
+  - name: nofusscomputing/centurion-ui
     newTag: 539d15bb05d8a20fcae8ab08f257e3be9afeab41
 
 labels:
