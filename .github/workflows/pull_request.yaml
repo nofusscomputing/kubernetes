@@ -9,8 +9,139 @@ on:
 
 jobs:
 
+
+  init:
+    name: Meta
+    runs-on: ubuntu-latest
+    outputs:
+      changed-files: ${{ steps.changed-files.outputs.project_all_changed_files }}
+      manifest-changed-files: ${{ steps.changed-manifest-files.outputs.all_changed_files }}
+      pip-any-changed: ${{ steps.changed-files-pip.outputs.any_changed}}
+      py-any-changed: ${{ steps.changed-files.outputs.any_changed}}
+      test-changed-files: ${{ steps.changed-files.outputs.test_changed_files }}
+    steps:
+
+
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1    # v7.0.1
+        with:
+          # fetch-depth: 100
+          fetch-depth: 0
+
+
+      - name: Get base branch name
+        id: base-branch-name
+        shell: bash
+        run: |
+          export CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD);
+
+          if [ "${CURRENT_BRANCH}" == "development" ]; then
+
+            BASE_BRANCH=master
+
+          elif [ "${CURRENT_BRANCH}" == "feature-next-release" ]; then
+
+            BASE_BRANCH=development
+
+          elif [ "${CURRENT_BRANCH}" == "feat-next-release" ]; then
+
+            BASE_BRANCH=development
+
+          else
+
+            if [ $(git rev-parse --verify feat-next-release) ]; then
+
+              BASE_BRANCH=feat-next-release
+
+            elif [ $(git rev-parse --verify feature-next-release) ]; then
+
+              BASE_BRANCH=feature-next-release
+
+            fi
+
+            echo $BASE_BRANCH
+
+          fi;
+
+          echo "Base branch is ${BASE_BRANCH}";
+
+          echo BASE_BRANCH=${BASE_BRANCH} > $GITHUB_OUTPUT
+
+
+      - name: Trace
+        shell: bash
+        run: |
+          git log -5;
+          git branch;
+
+
+
+      - name: Get all manifests files that have changed
+        id: changed-manifest-files
+        if: ${{ github.ref_name != 'master' && github.ref_name != 'development' && github.ref_type != 'tag' }}
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
+        with:
+          files: |
+            manifests/*.yaml
+            manifests/*/*.yaml
+            manifests/**/*.yaml
+          #   !app/*/tests/
+          #   !app/*/migrations/
+          # base_sha: ${{ steps.setSHAs.outputs.base }}
+          # base_sha: ${{ steps.get-sha.outputs.sha }}
+          # base_sha: ${{ env.NX_BASE }}
+          base_sha: ${{ steps.base-branch-name.outputs.BASE_BRANCH }}
+
+
+
+      - name: List all changed manifests files
+        # if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-manifest-files.outputs.all_changed_and_modified_files }}
+        run: |
+          echo "changed: ${ALL_CHANGED_FILES}":
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
+
+
+
+      - name: Get all files that have changed
+        id: changed-files
+        if: ${{ github.ref_name != 'master' && github.ref_name != 'development' && github.ref_type != 'tag' }}
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
+        with:
+          files: |
+            manifests/*.*
+            manifests/*/*.*
+          #   !app/*/tests/
+          #   !app/*/migrations/
+          # base_sha: ${{ steps.setSHAs.outputs.base }}
+          # base_sha: ${{ steps.get-sha.outputs.sha }}
+          # base_sha: ${{ env.NX_BASE }}
+          base_sha: ${{ steps.base-branch-name.outputs.BASE_BRANCH }}
+
+
+
+      - name: List all changed files
+        # if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
+        run: |
+          echo "changed: ${ALL_CHANGED_FILES}":
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
+
+
+
+
+
+
   lint:
     runs-on: ubuntu-latest
+    needs:
+      - init
     steps:
       - uses: actions/checkout@v3
 
@@ -18,7 +149,8 @@ jobs:
         run: pip install yamllint
 
       - name: Lint YAML files
-        run: yamllint ${PWD}/
+        if: needs.init.outputs.manifest-changed-files
+        run: yamllint ${{ needs.init.outputs.manifest-changed-files }}
 
 
   pull-request:
