@@ -18,7 +18,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: v1.30.1
+      app.kubernetes.io/version: '0.13.2+7c1e90b0'
 
 namespace: centurion-ui
 
