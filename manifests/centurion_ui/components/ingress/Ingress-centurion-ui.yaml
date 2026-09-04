@@ -1,0 +1,37 @@
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/common-name: example.com
+    cert-manager.io/duration: 2160h
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-rotation-policy: Always
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/subject-countries: N/A
+    cert-manager.io/subject-organizationalunits: N/A
+    cert-manager.io/subject-organizations: N/A
+    cert-manager.io/subject-provinces: N/A
+  labels:
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/part-of: centurion-ui
+  name: centurion-ui
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: centurion
+                port:
+                  name: ui
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+      - example.com
+      secretName: certificate-tls-centurion-ui
