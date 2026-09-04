@@ -1,0 +1,10 @@
+---
+
+# If this value is provided, version details will be obtained via git commands.
+git_provider: https://github.com
+
+# Repository to clone
+git_repository: nofusscomputing/centurion_ui
+
+# Branch to clone
+git_branch: feat-next-release
