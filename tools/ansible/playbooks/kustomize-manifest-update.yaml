@@ -1,0 +1,62 @@
+---
+
+- name: Update a manifest template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+
+  pre_tasks:
+
+
+    - name: Play Facts
+      ansible.builtin.set_fact:
+        repo_root: "{{ lookup('ansible.builtin.env', 'PWD') }}"
+
+
+    - name: Ensure manifest directory specified
+      ansible.builtin.assert:
+        that:
+          - dir_manifest is defined
+          - dir_manifest is not none
+        fail_msg: dir_manifest is a required variable.
+
+
+    - name: Find manifest role directories
+      ansible.builtin.find:
+        paths: "{{ repo_root }}/{{ dir_manifest }}/ansible"
+        file_type: directory
+        recurse: false
+      register: source_dirs
+
+
+    - name: Run manifest tasks
+      ansible.builtin.include_role:
+        name: kustomize-manifest-update
+        tasks_from: assemble
+
+
+  tasks:
+
+
+    - name: Run manifest tasks
+      ansible.builtin.include_role:
+        name: kustomize-manifest-update
+
+
+  post_tasks:
+
+
+    - name: Check for manifest changes
+      ansible.builtin.command:    # noqa: command-instead-of-module
+        # yamllint disable rule:indentation
+        cmd: >-
+          git status \
+              --porcelain \
+              -- \
+              {{ repo_root + '/' + dir_manifest }} \
+              ':(exclude){{ repo_root + '/' + dir_manifest }}/ansible'
+        # yamllint enable rule:indentation
+      register: git_status
+      changed_when: >-
+        git_status.stdout_lines | length > 0

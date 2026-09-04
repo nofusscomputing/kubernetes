@@ -1,0 +1,101 @@
+---
+
+# - name: Play Facts
+#   ansible.builtin.set_fact:
+#     repo_root: "{{ lookup('ansible.builtin.env', 'PWD') }}/../.."
+
+# - name: Trace
+#   ansible.builtin.debug:
+#     msg:
+#       - "{{ lookup('community.general.filetree', '../templates/') }}"
+#       # - "{{ ansible_search_path }}"
+
+
+# - name: Trace
+#   ansible.builtin.debug:
+#     msg:
+#       - "{{ fgh }}"
+#       # - "{{ ansible_search_path }}"
+
+# - name: Run manifest tasks
+#   ansible.builtin.include_role:
+#     name: setup-manifest-as-role
+#     tasks_from: start
+
+
+# - name: Ensure manifest directory specified
+#   ansible.builtin.assert:
+#     that:
+#       - dir_manifest is defined
+#       - dir_manifest is not none
+#       # - dir_manifest is not ''
+#     fail_msg: dir_manifest is a required variable.
+
+
+- name: Git Repo information
+  block:
+
+
+    # # - name: Fetch repository
+    # #   ansible.builtin.shell:
+    # #     cmd: |-
+    # #       git clone --depth=1 \
+    # #         --branch {{ git_branch }} \
+    # #         {{ git_provider }}/{{ git_repository }} \
+    # #         workdir/
+    - name: Checkout repository
+      ansible.builtin.git:
+        repo: "{{ git_provider }}/{{ git_repository }}.git"
+        dest: "{{ playbook_dir }}/workdir"
+        # depth: 1
+        # clone: true
+        # force: true
+        single_branch: yes
+        version: "{{ git_branch }}"
+      changed_when: false
+      register: git_checkout
+      when: git_provider is defined
+
+    # - debug:
+    #     msg: "{{git_checkout}}"
+
+    - name: Fetch the latest Git release tag
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail;
+          git tag --sort=-v:refname | head -n 1
+        chdir: "{{ playbook_dir }}/workdir"
+        executable: /bin/bash
+      changed_when: false
+      failed_when: git_tag_latest.stdout_lines | length != 1
+      register: git_tag_latest
+      when: git_provider is defined
+
+
+    - name: Fetch the latest Git release tag sha
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail;
+          git rev-list -n 1 "$(git tag --sort=-v:refname | head -n 1)"
+        chdir: "{{ playbook_dir }}/workdir"
+        executable: /bin/bash
+      changed_when: false
+      failed_when: git_tag_latest_sha.stdout_lines | length != 1
+      register: git_tag_latest_sha
+      when: git_provider is defined
+
+
+    - name: Play Facts
+      ansible.builtin.set_fact:
+        git_version_head: "{{ git_checkout.after[:8] }}"
+        git_version_latest: "{{ git_tag_latest.stdout | trim }}"
+        git_sha_version_head: "{{ git_checkout.after }}"
+        git_sha_version_latest: "{{ git_tag_latest_sha.stdout | trim }}"
+
+
+  always:
+
+    - name: Cleanup
+      ansible.builtin.command:
+        cmd: rm -rf workdir/
+      changed_when: false

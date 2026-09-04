@@ -1,0 +1,32 @@
+---
+
+- name: Task w/clean-up
+  block:
+
+
+    - name: Pre-Tasks
+      ansible.builtin.include_tasks:
+        file: pre.yaml
+
+
+    - name: Template files
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ repo_root + '/' + dir_manifest }}/{{ item.path | regex_replace('\\.j2$', '') }}"
+        mode: "{{ item.mode }}"
+      # yamllint disable rule:indentation
+      loop: >-
+        {{
+          query('community.general.filetree', '../templates/')
+          | selectattr('state', 'equalto', 'file')
+        }}
+      # yamllint enable rule:indentation
+
+  always:
+
+    - name: Remove symlinks
+      ansible.builtin.file:
+        path: "{{ role_path }}/{{ item.path | basename }}"
+        state: absent
+      loop: "{{ source_dirs.files }}"
+      changed_when: false
