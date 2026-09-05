@@ -22,6 +22,20 @@
         fail_msg: dir_manifest is a required variable.
 
 
+    - name: Check if ansible directory exists
+      ansible.builtin.stat:
+        path: "{{ repo_root }}/{{ dir_manifest }}/ansible"
+      register: directory_stat
+
+
+    - name: Ensure ansible directory exists
+      ansible.builtin.assert:
+        that:
+          - directory_stat.stat.exists
+          - directory_stat.stat.isdir
+        fail_msg: "{{ dir_manifest }} has no ansible directory, nothing to do."
+
+
     - name: Find manifest role directories
       ansible.builtin.find:
         paths: "{{ repo_root }}/{{ dir_manifest }}/ansible"
