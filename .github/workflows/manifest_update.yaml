@@ -1,0 +1,42 @@
+---
+
+name: 'Update Kustomize Manifest'
+
+
+on:
+  workflow_call:
+    inputs:
+      KUSTOMIZE_APP_DIR:
+        default: none
+        required: true
+        description: Name of the directory to update.
+        type: string
+
+
+jobs:
+
+  update:
+    name: 'Update Kustomize Manifest Directory'
+    if: github.event.commits[0].author.name != 'nfc-bot'
+    runs-on: ubuntu-latest
+    outputs:
+      version-current: ${{ steps.version-current.outputs.value-out }}
+      version-new: ${{ steps.version-new.outputs.value-out }}
+    steps:
+
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      - name: "Install Ansible"
+        uses: alex-oleshkevich/setup-ansible@ec02aeac423039773bd7423e706babb0211abcd5    # v1.0.1+ec02aeac
+        with:
+          version: "2.18.6"
+
+
+      - name: Run Play
+        shell: bash
+        run: |-
+          ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
+            --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}"

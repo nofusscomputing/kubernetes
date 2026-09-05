@@ -1,0 +1,26 @@
+---
+
+- name: Stage repository changes
+  ansible.builtin.command:    # noqa: command-instead-of-module
+    # yamllint disable rule:indentation
+    cmd: >-
+      git add \
+          {% for path in git_commit_exclude -%}
+          ':(exclude){{ path }}' \
+          {% endfor %}
+          {{ git_commit_path }}
+    # yamllint enable rule:indentation
+  register: git_commit_stage
+  changed_when: git_commit_stage.rc == 0
+
+
+- name: Commit repository changes
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    # yamllint disable rule:indentation
+    cmd: >-
+      git commit -m {{ git_commit_message }}
+    # yamllint enable rule:indentation
+  register: git_commit_create
+  changed_when: git_commit_create.rc == 0
+  when: >
+    git_commit_stage.changed

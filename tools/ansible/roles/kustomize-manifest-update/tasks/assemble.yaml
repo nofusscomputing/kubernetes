@@ -1,0 +1,9 @@
+---
+
+- name: Create symlinks
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "{{ role_path }}/{{ item.path | basename }}"
+    state: link
+  changed_when: false
+  loop: "{{ source_dirs.files }}"

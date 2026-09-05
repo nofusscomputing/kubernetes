@@ -1,0 +1,146 @@
+---
+
+- name: Confirm PR title exists
+  ansible.builtin.assert:
+    that:
+      - github_pull_request_title is defined
+      - github_pull_request_title is not none
+    fail_msg: Pull request requires a title
+
+
+- name: Confirm source branch has been defined
+  ansible.builtin.assert:
+    that:
+      - github_branch_working is defined
+      - github_branch_working is not none
+    fail_msg: Pull request requires a title
+
+
+- name: Create
+  block:
+
+
+    # https://docs.github.com/en/rest/pulls/pulls?utm_source=chatgpt.com#create-a-pull-request
+    - name: Pull request
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ github_repository }}/pulls"
+        method: POST
+        headers:
+          Accept: "application/vnd.github+json"
+          Authorization: "Bearer {{ github_token }}"
+          # X-GitHub-Api-Version: "2022-11-28"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          title: "{{ github_pull_request_title }}"
+          head: "{{ github_branch_working }}"
+          base: "{{ github_branch_destination }}"
+          body: >
+            Ansible update.
+          maintainer_can_modify: true
+        status_code: 201
+      register: pull_request_create
+      no_log: true
+
+  rescue:
+
+    - name: Show output on Error
+      ansible.builtin.debug:
+        msg: "{{ pull_request_create.json }}"
+
+
+
+- name: Create
+  block:
+
+
+    - name: Find PR
+      ansible.builtin.uri:
+        # yamllint disable rule:indentation
+        url: >-
+          https://api.github.com/repos/{{ github_repository }}/pulls?head={{ github_owner }}:{{
+            github_branch_working }}&base={{ github_branch_destination }}&state=open
+        # yamllint enable rule:indentation
+        method: GET
+        headers:
+          Accept: "application/vnd.github+json"
+          Authorization: "Bearer {{ github_token }}"
+          X-GitHub-Api-Version: "2026-03-10"
+        status_code: 200
+      # yamllint disable rule:indentation
+      failed_when: >
+        pull_request_create.status != 201
+          and
+        pull_request_find.json | length < 1
+      # yamllint enable rule:indentation
+      register: pull_request_find
+      no_log: true
+      when: >-
+        pull_request_create.status == 422
+
+
+  rescue:
+
+    - name: Show output on Error
+      ansible.builtin.debug:
+        msg: "{{ pull_request_find.json }}"
+
+
+- name: Set PR facts
+  ansible.builtin.set_fact:
+    # yamllint disable rule:indentation
+    pull_request_number: >-
+      {%- if pull_request_create.status == 201 -%}
+        {{ pull_request_create.json.number | int }}
+      {%- else -%}
+        {{ pull_request_find.json | map(attribute='number') | join(',') | default('-', true) }}
+      {%- endif %}
+    pull_request_asignees: >-
+      {{[
+        (
+          pull_request_create.json.user.login | default('-') | string
+          if pull_request_create.status == 201
+          else pull_request_find.json | map(attribute='user.login') | join(',') | default('-', true)
+        )
+      ] | list }}
+
+
+- name: Assign
+  block:
+
+
+    - name: Add assignee
+      ansible.builtin.uri:
+        # yamllint disable rule:indentation
+        url: |-
+          https://api.github.com/repos/{{
+            github_repository }}/issues/{{
+              pull_request_number }}/assignees
+        # yamllint enable rule:indentation
+        method: POST
+        headers:
+          Accept: "application/vnd.github+json"
+          Authorization: "Bearer {{ github_token }}"
+        body_format: json
+        body:
+          assignees: "{{ pull_request_asignees }}"
+        status_code: 201
+      no_log: true
+      register: github_pull_request_assign
+      # yamllint disable rule:indentation
+      when: >-
+        (
+          pull_request_number is defined
+            and
+          pull_request_number is not none
+        )
+          and
+        github_assign_pull_request
+      # yamllint enable rule:indentation
+
+
+  rescue:
+
+    - name: Show output on Error
+      ansible.builtin.debug:
+        msg: "{{ github_pull_request_assign.json }}"
