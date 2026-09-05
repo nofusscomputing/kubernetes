@@ -1,6 +1,6 @@
 ---
 
-- name: Update a manifest template
+- name: Update Kustomize manifests directory
   hosts: localhost
   gather_facts: false
   connection: local
@@ -47,16 +47,22 @@
   post_tasks:
 
 
-    - name: Check for manifest changes
-      ansible.builtin.command:    # noqa: command-instead-of-module
-        # yamllint disable rule:indentation
-        cmd: >-
-          git status \
-              --porcelain \
-              -- \
-              {{ repo_root + '/' + dir_manifest }} \
-              ':(exclude){{ repo_root + '/' + dir_manifest }}/ansible'
-        # yamllint enable rule:indentation
-      register: git_status
-      changed_when: >-
-        git_status.stdout_lines | length > 0
+    - name: Commit any changes
+      ansible.builtin.include_role:    # noqa: no-handler
+        name: git
+      vars:
+        git_commit_exclude:
+          - "{{ repo_root + '/' + dir_manifest }}/ansible"
+        git_commit_path: "{{ repo_root + '/' + dir_manifest }}"
+        git_commit_message: "build: update path {{ git_branch_working }}"
+
+
+    - name: Create PR
+      ansible.builtin.include_role:    # noqa: no-handler
+        name: github
+        tasks_from: pull-request
+      vars:
+        github_branch_working: "{{ git_branch_working | string }}"
+        github_assign_pull_request: true
+        github_pull_request_title: "build: Updated {{ dir_manifest }}"
+      when: git_commit_create.changed | default(false)
