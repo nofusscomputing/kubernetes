@@ -1,0 +1,30 @@
+---
+
+# Assigne authenticating user to pull request.
+github_assign_pull_request: false
+
+# Git branch to use as the repository to merge to.
+github_branch_destination: development
+
+# Git branch to use as the source branch.
+# github_branch_working: ""
+
+# dir_manifest: manifests/centurion-ui
+
+# user / Organisation whom owns the repository.
+# github_owner: ""
+github_owner: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY_OWNER') }}"
+
+# Pull request title
+# github_pull_request_title: ""
+
+# Name of the repository.
+# github_repository_name: ""
+github_repository_name: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
+
+# owner/name of repository working with. format "{{ github_owner }}/{{ github_repository_name }}".
+github_repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY') }}"
+
+# token to use to connect to API.
+# github_token: ""
+github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
