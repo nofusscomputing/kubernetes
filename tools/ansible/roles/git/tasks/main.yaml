@@ -1,0 +1,41 @@
+---
+
+- name: Ensure commit path has been provided
+  ansible.builtin.assert:
+    that:
+      - git_commit_path is defined
+      - git_commit_path is not none
+    fail_msg: A commit path must be specified.
+
+
+- name: Check for GIT repository for changes
+  ansible.builtin.command:    # noqa: command-instead-of-module
+    # yamllint disable rule:indentation
+    cmd: >-
+      git status \
+          --porcelain \
+          -- \
+          {% for path in git_commit_exclude -%}
+          ':(exclude){{ path }}' \
+          {% endfor %}
+          {{ git_commit_path }}
+    # yamllint enable rule:indentation
+  register: git_status
+  changed_when: >-
+    git_status.stdout_lines | length > 0
+
+
+- name: Create branch
+  ansible.builtin.include_tasks:    # noqa: no-handler
+    file: branch_create.yaml
+  when: git_status.changed
+
+
+- name: Commit Changes
+  ansible.builtin.include_tasks:    # noqa: no-handler
+    file: commit_changes.yaml
+  when: git_status.changed
+
+- name: Set Play fact
+  ansible.builtin.set_fact:
+    git_branch_working: "{{ git_branch_working }}"

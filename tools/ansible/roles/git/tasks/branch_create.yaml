@@ -1,0 +1,38 @@
+---
+
+- name: Check if GIT working branch exists
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git show-ref --verify --quiet refs/heads/{{ git_branch_working }}
+  changed_when: git_branch_exists.rc == 0
+  failed_when: >    # 0 = Exists, 1 = Not exist.
+    git_branch_exists.rc > 1
+  register: git_branch_exists
+  when: >-
+    git_status.changed
+
+
+- name: Git stash changes
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git stash push --include-untracked -m create-branch
+  changed_when: git_stash.rc == 0
+  register: git_stash
+  when: >-
+    git_status.changed
+
+
+- name: Create GIT working branch exists
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git switch -c {{ git_branch_working }} development;
+  changed_when: git_commit_changes.rc == 0
+  register: git_commit_changes
+  when: >-
+    git_status.changed
+
+
+- name: Pop latest GIT stash
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git stash pop
+  changed_when: git_stash_pop.rc == 0
+  register: git_stash_pop
+  when: >-
+    git_stash.changed

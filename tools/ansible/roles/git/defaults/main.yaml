@@ -1,0 +1,14 @@
+---
+# yamllint disable rule:comments-indentation
+
+# Branch used to commit changes to
+git_branch_working: build-updates
+
+# List of paths to exclude from being commited
+git_commit_exclude: []
+
+# Git path to commit
+# git_commit_path: ""
+
+# Git commit message.
+# git_commit_message: "build: update path {{ git_branch_working }}"
