@@ -2,9 +2,8 @@
 
 name: 'Update Kustomize Manifest'
 
-
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       KUSTOMIZE_APP_DIR:
         default: none
