@@ -21,6 +21,9 @@ github_owner: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY_OWNER') }}"
 # Pull request title
 # github_pull_request_title: ""
 
+# List of GH usernames to assign to pr.
+# github_pull_request_assignee_users: []
+
 # Name of the repository.
 # github_repository_name: ""
 github_repository_name: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"

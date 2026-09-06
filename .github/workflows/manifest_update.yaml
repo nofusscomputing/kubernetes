@@ -56,10 +56,11 @@ jobs:
         shell: bash
         env:
           ANSIBLE_FORCE_COLOR: "1"
-          GIT_AUTHOR_NAME: nfc_bot
+          GIT_AUTHOR_NAME: nfc-robot
           GIT_AUTHOR_EMAIL: helpdesk@nofusscomputing.com
-          GIT_COMMITTER_NAME: nfc_bot
+          GIT_COMMITTER_NAME: nfc-robot
           GIT_COMMITTER_EMAIL: helpdesk@nofusscomputing.com
+          PR_ASSIGNEE_USERS: nfc-robot
         run: |-
           ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
             --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}" \
