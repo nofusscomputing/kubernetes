@@ -123,7 +123,7 @@
           Authorization: "Bearer {{ github_token }}"
         body_format: json
         body:
-          assignees: "{{ pull_request_asignees }}"
+          assignees: "{{ github_pull_request_assignee_users | default(pull_request_asignees) }}"
         status_code: 201
       no_log: true
       register: github_pull_request_assign
@@ -144,3 +144,4 @@
     - name: Show output on Error
       ansible.builtin.debug:
         msg: "{{ github_pull_request_assign.json }}"
+      failed_when: true
