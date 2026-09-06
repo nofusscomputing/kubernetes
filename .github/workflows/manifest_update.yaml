@@ -16,6 +16,9 @@ jobs:
   update:
     name: 'Update Kustomize Manifest Directory'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       version-current: ${{ steps.version-current.outputs.value-out }}
       version-new: ${{ steps.version-new.outputs.value-out }}
