@@ -5,7 +5,7 @@
 
 
     - name: Stage repository changes
-      ansible.builtin.command:    # noqa: command-instead-of-module
+      ansible.builtin.shell:    # noqa: command-instead-of-module
         # yamllint disable rule:indentation
         cmd: >-
           git add \
@@ -15,6 +15,7 @@
               {{ git_commit_path | replace(repo_root + '/', '') }}
         # yamllint enable rule:indentation
         chdir: "{{ repo_root }}"
+        executable: bash
       register: git_commit_stage
       changed_when: git_commit_stage.rc == 0
 
