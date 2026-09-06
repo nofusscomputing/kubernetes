@@ -61,6 +61,7 @@ jobs:
           GIT_COMMITTER_NAME: nfc-robot
           GIT_COMMITTER_EMAIL: helpdesk@nofusscomputing.com
           GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+          PR_ASSIGNEE_USERS: nfc-robot
         run: |-
           ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
             --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}" \
