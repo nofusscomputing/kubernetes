@@ -8,6 +8,11 @@
     fail_msg: A commit path must be specified.
 
 
+- name: Create branch
+  ansible.builtin.include_tasks:    # noqa: no-handler
+    file: branch_create.yaml
+
+
 - name: Check for GIT repository for changes
   ansible.builtin.command:    # noqa: command-instead-of-module
     # yamllint disable rule:indentation
@@ -25,19 +30,13 @@
     git_status.stdout_lines | length > 0
 
 
-- name: Create branch
-  ansible.builtin.include_tasks:    # noqa: no-handler
-    file: branch_create.yaml
-  when: git_status.changed
-
-
 - name: Commit Changes
   ansible.builtin.include_tasks:    # noqa: no-handler
     file: commit_changes.yaml
   when: git_status.changed
 
 
-- name: Commit Changes
+- name: Push Changes
   ansible.builtin.include_tasks:    # noqa: no-handler
     file: push.yaml
   when: git_commit_create.changed | default(false)

@@ -7,8 +7,6 @@
   failed_when: >    # 0 = Exists, 1 = Not exist.
     git_branch_exists.rc > 1
   register: git_branch_exists
-  when: >-
-    git_status.changed
 
 
 - name: Git stash changes
@@ -16,8 +14,6 @@
     cmd: git stash push --include-untracked -m create-branch
   changed_when: git_stash.rc == 0
   register: git_stash
-  when: >-
-    git_status.changed
 
 
 - name: Create GIT working branch
@@ -25,8 +21,21 @@
     cmd: git switch -c {{ git_branch_working }} origin/development
   changed_when: git_commit_changes.rc == 0
   register: git_commit_changes
+  # yamllint disable rule:indentation
   when: >-
-    git_status.changed
+    not git_branch_exists.changed
+  # yamllint enable rule:indentation
+
+
+- name: Checkout GIT working branch
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git checkout {{ git_branch_working }}
+  changed_when: git_commit_changes.rc == 0
+  register: git_commit_changes
+  # yamllint disable rule:indentation
+  when: >-
+    git_branch_exists.changed
+  # yamllint enable rule:indentation
 
 
 - name: Pop latest GIT stash
