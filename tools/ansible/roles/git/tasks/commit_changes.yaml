@@ -21,9 +21,9 @@
     cmd: >-
       git add \
           {% for path in git_commit_exclude -%}
-          ':(exclude){{ path }}' \
+          ':(exclude){{ path | replace(repo_root + '/', '') }}' \
           {% endfor %}
-          {{ git_commit_path }}
+          {{ git_commit_path | replace(repo_root + '/', '') }}
     # yamllint enable rule:indentation
     chdir: "{{ repo_root }}"
   register: git_commit_stage
