@@ -20,7 +20,7 @@
     git_status.changed
 
 
-- name: Create GIT working branch exists
+- name: Create GIT working branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git switch -c {{ git_branch_working }} development
   changed_when: git_commit_changes.rc == 0
