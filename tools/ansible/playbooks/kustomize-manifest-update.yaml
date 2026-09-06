@@ -23,6 +23,8 @@
               lookup('ansible.builtin.env', 'PWD'), true) }}
         # yamllint enable rule:indentation
         git_branch_current: "{{ get_git_branch_current.stdout | trim }}"
+        github_pull_request_assignee_users: |-
+          {{ lookup( 'ansible.builtin.env', 'PR_ASSIGNEE_USERS') | default(omit) }}
 
 
     - name: Ensure manifest directory specified

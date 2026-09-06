@@ -97,7 +97,9 @@
       {%- endif %}
     pull_request_asignees: >-
       {{[
-        (
+        github_pull_request_assignee_users
+        if github_pull_request_assignee_users
+        else (
           pull_request_create.json.user.login | default('-') | string
           if pull_request_create.status == 201
           else pull_request_find.json | map(attribute='user.login') | join(',') | default('-', true)
@@ -139,8 +141,8 @@
       # yamllint enable rule:indentation
 
 
-  rescue:
+  always:
 
-    - name: Show output on Error
+    - name: Show output
       ansible.builtin.debug:
         msg: "{{ github_pull_request_assign.json }}"
