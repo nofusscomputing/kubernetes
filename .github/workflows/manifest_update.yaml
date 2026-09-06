@@ -59,4 +59,5 @@ jobs:
           GIT_COMMITTER_EMAIL: helpdesk@nofusscomputing.com
         run: |-
           ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
-            --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}"
+            --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}" \
+            -vvv
