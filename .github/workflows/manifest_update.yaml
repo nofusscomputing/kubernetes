@@ -60,6 +60,7 @@ jobs:
           GIT_AUTHOR_EMAIL: helpdesk@nofusscomputing.com
           GIT_COMMITTER_NAME: nfc_bot
           GIT_COMMITTER_EMAIL: helpdesk@nofusscomputing.com
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-
           ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
             --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}" \
