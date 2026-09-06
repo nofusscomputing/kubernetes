@@ -32,12 +32,9 @@
     "editor.indentSize": "tabSize",
     "editor.tabSize": 2,
     "files.eol": "\n",
-    "yaml.schemas": {
-            "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": [
-                "file://**/playbooks/playbook-new-base.yaml"
-            ],
-            "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": [
-                "file://**/tasks/*.yaml"
-            ]
-        }
+    "files.associations": {
+        "**/defaults/*.yaml": "ansible",
+        "**/playbooks/*.yaml": "ansible",
+        "**/tasks/*.yaml": "ansible"
+    }
 }
