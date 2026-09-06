@@ -11,7 +11,7 @@
 
     - name: Play Facts
       ansible.builtin.set_fact:
-        repo_root: "{{ lookup('ansible.builtin.env', 'PWD') }}"
+        repo_root: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') | default(lookup('ansible.builtin.env', 'PWD'), true) }}"
 
 
     - name: Ensure manifest directory specified

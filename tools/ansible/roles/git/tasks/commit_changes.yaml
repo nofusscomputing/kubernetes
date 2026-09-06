@@ -1,5 +1,20 @@
 ---
 
+
+- name: Trace
+  ansible.builtin.shell:
+    cmd: >-
+      echo "*******************************************************";
+      echo "${PWD}";
+      echo "*******************************************************";
+      ls -la;
+      echo "*******************************************************";
+      echo "{{ repo_root }}";
+      echo "*******************************************************";
+      ls -la {{ repo_root }};
+  changed_when: false
+
+
 - name: Stage repository changes
   ansible.builtin.command:    # noqa: command-instead-of-module
     # yamllint disable rule:indentation
@@ -10,6 +25,7 @@
           {% endfor %}
           {{ git_commit_path }}
     # yamllint enable rule:indentation
+    chdir: "{{ repo_root }}"
   register: git_commit_stage
   changed_when: git_commit_stage.rc == 0
 

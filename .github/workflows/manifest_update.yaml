@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
     inputs:
       KUSTOMIZE_APP_DIR:
-        default: none
         required: true
         description: Name of the directory to update.
         type: string
@@ -16,7 +15,6 @@ jobs:
 
   update:
     name: 'Update Kustomize Manifest Directory'
-    if: github.event.commits[0].author.name != 'nfc-bot'
     runs-on: ubuntu-latest
     outputs:
       version-current: ${{ steps.version-current.outputs.value-out }}
@@ -25,7 +23,12 @@ jobs:
 
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1    # v7.0.1
+        with:
+          fetch-depth: 0
+
+
+      - run: git branch -a
 
 
       - name: "Install Python"
@@ -46,8 +49,15 @@ jobs:
           ansible-galaxy collection install -r tools/ansible/requirements.yaml;
 
 
-      - name: Run Play
+      - name: Run Play against "${{ inputs.KUSTOMIZE_APP_DIR }}"
         shell: bash
+        env:
+          ANSIBLE_FORCE_COLOR: "1"
+          GIT_AUTHOR_NAME: nfc_bot
+          GIT_AUTHOR_EMAIL: helpdesk@nofusscomputing.com
+          GIT_COMMITTER_NAME: nfc_bot
+          GIT_COMMITTER_EMAIL: helpdesk@nofusscomputing.com
         run: |-
           ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
-            --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}"
+            --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}" \
+            -vvv
