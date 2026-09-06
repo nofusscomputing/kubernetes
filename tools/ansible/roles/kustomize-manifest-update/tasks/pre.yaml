@@ -4,7 +4,7 @@
   block:
 
 
-    - name: Checkout repository
+    - name: Checkout application repository
       ansible.builtin.git:
         repo: "{{ manifest_git_provider }}/{{ manifest_git_repository }}.git"
         dest: "{{ playbook_dir }}/workdir"

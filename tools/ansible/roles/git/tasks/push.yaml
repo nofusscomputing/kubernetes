@@ -1,6 +1,6 @@
 ---
 
-- name: Check if GIT working branch exists
+- name: Push GIT working branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: "git push --set-upstream origin {{ git_branch_working }}"
   changed_when: git_branch_exists.rc == 0
