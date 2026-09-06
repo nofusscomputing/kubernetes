@@ -36,6 +36,13 @@
     file: commit_changes.yaml
   when: git_status.changed
 
+
+- name: Commit Changes
+  ansible.builtin.include_tasks:    # noqa: no-handler
+    file: push.yaml
+  when: git_commit_create.changed | default(false)
+
+
 - name: Set Play fact
   ansible.builtin.set_fact:
     git_branch_working: "{{ git_branch_working }}"
