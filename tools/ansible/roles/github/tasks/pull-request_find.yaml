@@ -1,0 +1,47 @@
+---
+
+- name: Find
+  block:
+
+
+    - name: Find PR
+      ansible.builtin.uri:
+        # yamllint disable rule:indentation
+        url: >-
+          https://api.github.com/repos/{{ github_repository }}/pulls?head={{ github_owner }}:{{
+            github_branch_working }}&base={{ github_branch_destination }}&state=open
+        # yamllint enable rule:indentation
+        method: GET
+        headers:
+          Accept: "application/vnd.github+json"
+          Authorization: "Bearer {{ github_token }}"
+          X-GitHub-Api-Version: "2026-03-10"
+        status_code: 200
+      # yamllint disable rule:indentation
+      failed_when: >
+        (
+          pull_request_create.status | default(201) != 201
+            and
+          pull_request_create is defined
+            and
+          pull_request_find.json | length < 1
+        )
+      # yamllint enable rule:indentation
+      register: pull_request_find
+      no_log: true
+      # yamllint disable rule:indentation
+      when: >-
+        (
+          pull_request_create.status == 422
+            and
+          pull_request_create is defined
+        )
+          or
+        pull_request_create is not defined
+      # yamllint enable rule:indentation
+
+  always:
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ pull_request_find.json }}"
