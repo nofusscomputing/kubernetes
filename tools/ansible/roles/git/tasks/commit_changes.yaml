@@ -1,42 +1,51 @@
 ---
 
-
-- name: Trace
-  ansible.builtin.shell:
-    cmd: >-
-      echo "*******************************************************";
-      echo "${PWD}";
-      echo "*******************************************************";
-      ls -la;
-      echo "*******************************************************";
-      echo "{{ repo_root }}";
-      echo "*******************************************************";
-      ls -la {{ repo_root }};
-  changed_when: false
+- name: Commit
+  block:
 
 
-- name: Stage repository changes
-  ansible.builtin.command:    # noqa: command-instead-of-module
-    # yamllint disable rule:indentation
-    cmd: >-
-      git add \
-          {% for path in git_commit_exclude -%}
-          ':(exclude){{ path | replace(repo_root + '/', '') }}' \
-          {% endfor %}
-          {{ git_commit_path | replace(repo_root + '/', '') }}
-    # yamllint enable rule:indentation
-    chdir: "{{ repo_root }}"
-  register: git_commit_stage
-  changed_when: git_commit_stage.rc == 0
+    - name: Stage repository changes
+      ansible.builtin.command:    # noqa: command-instead-of-module
+        # yamllint disable rule:indentation
+        cmd: >-
+          git add \
+              {% for path in git_commit_exclude -%}
+              ':(exclude){{ path | replace(repo_root + '/', '') }}' \
+              {% endfor %}
+              {{ git_commit_path | replace(repo_root + '/', '') }}
+        # yamllint enable rule:indentation
+        chdir: "{{ repo_root }}"
+      register: git_commit_stage
+      changed_when: git_commit_stage.rc == 0
 
 
-- name: Commit repository changes
-  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
-    # yamllint disable rule:indentation
-    cmd: >-
-      git commit -m {{ git_commit_message }}
-    # yamllint enable rule:indentation
-  register: git_commit_create
-  changed_when: git_commit_create.rc == 0
-  when: >
-    git_commit_stage.changed
+    - name: Commit repository changes
+      ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+        # yamllint disable rule:indentation
+        cmd: >-
+          git commit -m '{{ git_commit_message }}'
+        # yamllint enable rule:indentation
+      register: git_commit_create
+      changed_when: git_commit_create.rc == 0
+      when: >
+        git_commit_stage.changed
+
+  rescue:
+
+
+    - name: Delete Created Branch
+      ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+        cmd: git checkout {{ git_branch_current }}
+      changed_when: false
+      failed_when: true
+      when: >
+        git_commit_changes.changed
+
+
+    - name: Delete Created Branch
+      ansible.builtin.command:    # noqa: no-handler
+        cmd: git branch -D {{ git_branch_working }}
+      changed_when: false
+      failed_when: true
+      when: >
+        git_commit_changes.changed

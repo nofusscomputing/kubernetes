@@ -1,5 +1,8 @@
 ---
 
+# the current/initial git branch
+git_branch_current: "{{ lookup('ansible.builtin.env', 'GITHUB_REF_NAME') }}"    # noqa: var-naming[no-role-prefix] yaml[line-length]
+
 # Assigne authenticating user to pull request.
 github_assign_pull_request: false
 

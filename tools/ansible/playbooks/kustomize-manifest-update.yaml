@@ -8,10 +8,21 @@
 
   pre_tasks:
 
+    - name: Get current GIT branch
+      ansible.builtin.command:
+        cmd: git branch --show-current
+      changed_when: false
+      register: get_git_branch_current
+
 
     - name: Play Facts
       ansible.builtin.set_fact:
-        repo_root: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') | default(lookup('ansible.builtin.env', 'PWD'), true) }}"
+        # yamllint disable rule:indentation
+        repo_root: |-
+          {{ lookup( 'ansible.builtin.env', 'GITHUB_WORKSPACE') | default(
+              lookup('ansible.builtin.env', 'PWD'), true) }}
+        # yamllint enable rule:indentation
+        git_branch_current: "{{ get_git_branch_current.stdout | trim }}"
 
 
     - name: Ensure manifest directory specified
