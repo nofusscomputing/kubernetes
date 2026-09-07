@@ -18,7 +18,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: '{{ git_version_latest }}+{{ git_version_head }}'
+      app.kubernetes.io/version: '{{ git_version_latest }}_{{ git_version_head }}'
 
 namespace: centurion-ui
 
