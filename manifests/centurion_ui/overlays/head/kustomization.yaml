@@ -9,7 +9,7 @@ kind: Kustomization
 images:
   # This image is intended to be kept up to date with feat-* and dev branch.
   - name: nofusscomputing/centurion-ui
-    newName: nofusscomputing/centurion-ui
+    newName: ghcr.io/nofusscomputing/centurion-ui
     newTag: 7c1e90b02efb1d22da1faad1a6ec23ddef8eb03b
 
 labels:
