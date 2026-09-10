@@ -57,7 +57,7 @@ spec:
 
 
         - name: ui
-          image: nofusscomputing/centurion-erp-ui:dev
+          image: nofusscomputing/centurion-ui:dev
           env: []
           resources:
             limits:
