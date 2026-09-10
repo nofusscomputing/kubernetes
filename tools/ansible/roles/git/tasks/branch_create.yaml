@@ -12,7 +12,12 @@
 - name: Git stash changes
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git stash push --include-untracked -m create-branch
-  changed_when: git_stash.rc == 0
+  # yamllint disable rule:indentation
+  changed_when: >-
+    git_stash.rc == 0
+      and
+    'No local changes to save' not in git_stash.stdout
+  # yamllint disable rule:indentation
   register: git_stash
 
 
