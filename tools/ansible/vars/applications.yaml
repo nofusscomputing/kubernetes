@@ -1,0 +1,32 @@
+---
+
+providers:    # Git Provider URLs
+  github: https://github.com
+
+
+applications:
+
+  # - name: string            # Name of the application.
+  #   provider: github        # GIT provider.
+  #   repository:
+  #     owner: string         # Repository owner.
+  #     name: string          # Repository name. This value must also be used for the manifests
+  #                           # directory name.
+  #     branch:
+  #       manifest: string    # Name of the branch to clone for manifest updating
+
+  - name: Centurion UI
+    provider: github
+    repository:
+      owner: nofusscomputing
+      name: centurion_ui
+      branch:
+        manifest: feat-next-release
+
+  - name: Centurion ERP
+    provider: github
+    repository:
+      owner: nofusscomputing
+      name: centurion_erp
+      branch:
+        manifest: feat-next-release

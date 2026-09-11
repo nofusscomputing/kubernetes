@@ -28,40 +28,22 @@
           {{ lookup( 'ansible.builtin.env', 'PR_ASSIGNEE_USERS') | default(omit) }}
 
 
-    - name: Ensure manifest directory specified
-      ansible.builtin.assert:
-        that:
-          - dir_manifest is defined
-          - dir_manifest is not none
-        fail_msg: dir_manifest is a required variable.
+    - name: Load Application Variables
+      ansible.builtin.include_vars:
+        file: "../vars/applications.yaml"
 
 
-    - name: Check if ansible directory exists
-      ansible.builtin.stat:
-        path: "{{ repo_root }}/{{ dir_manifest }}/ansible"
-      register: directory_stat
+    - name: Load Versions Variables
+      ansible.builtin.include_vars:
+        file: "../vars/versions.yaml"
 
 
-    - name: Ensure ansible directory exists
-      ansible.builtin.assert:
-        that:
-          - directory_stat.stat.exists
-          - directory_stat.stat.isdir
-        fail_msg: "{{ dir_manifest }} has no ansible directory, nothing to do."
-
-
-    - name: Find manifest role directories
+    - name: Fetch Manifest Directories
       ansible.builtin.find:
-        paths: "{{ repo_root }}/{{ dir_manifest }}/ansible"
+        paths: "{{ repo_root }}/manifests"
         file_type: directory
         recurse: false
-      register: source_dirs
-
-
-    - name: Run manifest tasks
-      ansible.builtin.include_role:
-        name: kustomize-manifest-update
-        tasks_from: assemble
+      register: manifest_directories
 
 
   tasks:
@@ -70,19 +52,16 @@
     - name: Run manifest tasks
       ansible.builtin.include_role:
         name: kustomize-manifest-update
+      loop: "{{ manifest_directories.files }}"
+      loop_control:
+        loop_var: manifest_directory
+      vars:
+        directory_manifest: "manifests"
+        directory_application: "{{ manifest_directory.path | basename }}"
+      when: directory_application == 'centurion_ui'
 
 
   post_tasks:
-
-
-    - name: Commit any changes
-      ansible.builtin.include_role:    # noqa: no-handler
-        name: git
-      vars:
-        git_commit_exclude:
-          - "{{ repo_root + '/' + dir_manifest }}/ansible"
-        git_commit_path: "{{ repo_root + '/' + dir_manifest }}"
-        git_commit_message: "build: update path {{ git_branch_working }}"
 
 
     - name: Create PR
@@ -92,5 +71,5 @@
       vars:
         github_branch_working: "{{ git_branch_working | string }}"
         github_assign_pull_request: true
-        github_pull_request_title: "build: Updated {{ dir_manifest }}"
-      when: git_commit_create.changed | default(false)
+        github_pull_request_title: "build: Updated {{ directory_manifest }}"
+      when: has_commits | default(false)
