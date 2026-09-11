@@ -50,13 +50,6 @@ spec:
                 name: centurion
                 port:
                   name: api
-            path: /sso/
-            pathType: Prefix
-          - backend:
-              service:
-                name: centurion
-                port:
-                  name: api
             path: /static/
             pathType: Prefix
           - backend:

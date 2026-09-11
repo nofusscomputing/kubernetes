@@ -25,3 +25,20 @@ patches:
       kind: Deployment
       name: api
       version: v1
+
+  - patch: |-
+      - op: add
+        path: /spec/rules/0/http/paths/0
+        value:
+          backend:
+            service:
+              name: centurion
+              port:
+                name: api
+          path: /sso/
+          pathType: Prefix
+
+    target:
+      kind: Ingress
+      name: centurion
+      version: v1
