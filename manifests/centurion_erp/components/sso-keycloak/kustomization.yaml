@@ -14,7 +14,6 @@ secretGenerator:
       - 70.social_auth_keycloak.py
 
 patches:
-
   - patch: |-
       - op: add
         path: /spec/template/spec/volumes/0/projected/sources/-

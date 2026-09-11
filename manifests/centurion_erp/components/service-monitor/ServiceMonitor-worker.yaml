@@ -9,11 +9,11 @@ metadata:
   name: worker
 spec:
   endpoints:
-  - interval: 30s
-    port: metrics
-    relabelings:
-      - targetLabel: "job"
-        replacement: "django"
+    - interval: 30s
+      port: metrics
+      relabelings:
+        - targetLabel: "job"
+          replacement: "django"
   selector:
     matchLabels:
     app.kubernetes.io/component: service-monitor

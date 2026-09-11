@@ -14,7 +14,7 @@ resources:
 secretGenerator:
   - name: user-centurion
     options:
-       labels:
+      labels:
         app.kubernetes.io/component: message-queuing
         app.kubernetes.io/name: rabbitmq
         app.kubernetes.io/part-of: centurion-erp

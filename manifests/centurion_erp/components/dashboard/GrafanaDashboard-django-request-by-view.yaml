@@ -1,5 +1,5 @@
-
 ---
+
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
@@ -18,4 +18,4 @@ spec:
       dashboards: grafana
   grafanaCom:
     id: 17613
-    revision: 2 # as @ 2020-01-12
+    revision: 2    # as @ 2020-01-12
