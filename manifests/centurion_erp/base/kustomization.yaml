@@ -1,0 +1,52 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+configMapGenerator:
+  - name: configuration
+    files:
+      - 00.settings.py
+      - 15.ui-redirect.py
+      - 80.csrf.py
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+# patches:
+#   - patch: |-
+#       apiVersion: apps/v1
+#       kind: Deployment
+#       metadata:
+#         name: api
+#       spec:
+#         template:
+#           spec:
+#             containers:
+#               - name: ui
+#                 env:
+#                   - name: API_URL
+#                     value: https://<domain.tld>/api/v2
+
+#     target:
+#       kind: Deployment
+#       name: api
+#       version: v1
+
+resources:
+  - PVC-centurion.yaml
+  - Deployment-api.yaml
+  - Deployment-worker.yaml
+  - Service-api.yaml
+
+secretGenerator:
+  - name: secret-key
+    files:
+      - 90.secret_key.py
+
+  - name: celery-broker
+    files:
+      - 10.celery-broker.py
+
+  - name: database
+    files:
+      - 20.database.py

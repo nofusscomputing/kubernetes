@@ -1,0 +1,37 @@
+---
+
+- name: Update Application Variables
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+
+    - name: Run Versions update
+      ansible.builtin.include_role:
+        name: app-versions
+
+
+  post_tasks:
+
+
+    - name: Commit any changes
+      ansible.builtin.include_role:    # noqa: no-handler
+        name: git
+      vars:
+        git_commit_exclude:
+          - "{{ repo_root + '/' + directory_manifest }}/ansible"
+        git_commit_path: "{{ playbook_dir }}/../vars/versions.yaml"
+        git_commit_message: "chore: Updated Application Versions"
+
+
+    - name: Create PR
+      ansible.builtin.include_role:    # noqa: no-handler
+        name: github
+        tasks_from: pull-request
+      vars:
+        github_branch_working: "{{ git_branch_working | string }}"
+        github_assign_pull_request: true
+        github_pull_request_title: "chore: Updated Application Versions"
+      when: git_commit_create.changed | default(false)

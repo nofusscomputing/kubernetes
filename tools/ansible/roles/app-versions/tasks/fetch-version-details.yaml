@@ -1,0 +1,84 @@
+---
+
+- name: Git Repo information
+  block:
+
+
+    - name: Checkout application repository - {{ application.name }}
+      ansible.builtin.git:
+        # yamllint disable rule:indentation
+        repo: |-
+          {{ providers[application.provider] }}/{{ application.repository.owner }}/{{
+            application.repository.name }}.git
+        # yamllint enable rule:indentation
+        dest: "{{ playbook_dir }}/workdir"
+        single_branch: yes
+        version: "{{ application.repository.branch.manifest }}"
+      # yamllint disable rule:indentation rule:line-length
+      changed_when: >
+        application.repository.name not in versions
+          or
+        versions[application.repository.name].git_version_head | default('') != git_checkout.after[:8]
+          or
+        versions[application.repository.name].git_sha_version_head | default('') != git_checkout.after
+      # yamllint enable rule:indentation rule:line-length
+      register: git_checkout
+      # when: manifest_git_provider is defined
+
+
+    - name: Fetch the latest Git release tag - {{ application.name }}
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail;
+          git tag --sort=-v:refname | head -n 1
+        chdir: "{{ playbook_dir }}/workdir"
+        executable: /bin/bash
+      # yamllint disable rule:indentation rule:line-length
+      changed_when: >
+        application.repository.name not in versions
+          or
+        versions[application.repository.name].git_version_latest | default('') != git_tag_latest.stdout | trim
+      # yamllint enable rule:indentation rule:line-length
+      failed_when: git_tag_latest.stdout_lines | length != 1
+      register: git_tag_latest
+      # when: manifest_git_provider is defined
+
+
+    - name: Fetch the latest Git release tag sha - {{ application.name }}
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail;
+          git rev-list -n 1 "$(git tag --sort=-v:refname | head -n 1)"
+        chdir: "{{ playbook_dir }}/workdir"
+        executable: /bin/bash
+      # yamllint disable rule:indentation rule:line-length
+      changed_when: >
+        application.repository.name not in versions
+          or
+        versions[application.repository.name].git_sha_version_latest | default('') != git_tag_latest_sha.stdout | trim
+      # yamllint enable rule:indentation rule:line-length
+      failed_when: git_tag_latest_sha.stdout_lines | length != 1
+      register: git_tag_latest_sha
+      # when: manifest_git_provider is defined
+
+
+    - name: Play Facts
+      ansible.builtin.set_fact:
+        # yamllint disable rule:indentation
+        versions: |
+          {{ versions | combine({
+            application.repository.name: {
+              "git_version_head": git_checkout.after[:8],
+              "git_version_latest": git_tag_latest.stdout | trim,
+              "git_sha_version_head": git_checkout.after,
+              "git_sha_version_latest": git_tag_latest_sha.stdout | trim
+            }
+          }) }}
+
+
+  always:
+
+    - name: Cleanup
+      ansible.builtin.command:
+        cmd: rm -rf workdir/
+      changed_when: false

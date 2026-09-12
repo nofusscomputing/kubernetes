@@ -1,0 +1,20 @@
+---
+
+apiVersion: rabbitmq.com/v1beta1
+kind: Permission
+metadata:
+  labels:
+    app.kubernetes.io/component: message-queuing
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: centurion-erp
+  name: permission-centurion
+spec:
+  vhost: "centurion"
+  user: "centurion"
+  permissions:
+    write: ".*"
+    configure: ".*"
+    read: ".*"
+  rabbitmqClusterReference:
+    name: main
+    namespace: rabbitmq

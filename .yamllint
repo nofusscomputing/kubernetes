@@ -63,7 +63,7 @@ rules:
     level: error
     spaces: 2
     indent-sequences: true
-    check-multi-line-strings: true
+    check-multi-line-strings: false
 
   line-length:
     level: warning

@@ -1,30 +1,91 @@
 ---
 
+- name: Ensure manifest directory specified
+  ansible.builtin.assert:
+    that:
+      - directory_manifest is defined
+      - directory_manifest is not none
+    fail_msg: directory_manifest is a required variable.
+
+- name: Ensure manifest application directory specified
+  ansible.builtin.assert:
+    that:
+      - directory_application is defined
+      - directory_application is not none
+    fail_msg: directory_application is a required variable.
+
+
+- name: Check if ansible directory exists - {{ directory_application }}
+  ansible.builtin.stat:
+    path: "{{ repo_root }}/{{ directory_manifest }}/{{ directory_application }}/ansible"
+  register: directory_stat
+
+
+
 - name: Task w/clean-up
+  when: directory_stat.stat.exists
   block:
 
 
-    - name: Pre-Tasks
+    - name: Ensure ansible directory exists - {{ directory_application }}
+      ansible.builtin.assert:
+        that:
+          - directory_stat.stat.exists
+          - directory_stat.stat.isdir
+        fail_msg: "{{ directory_manifest }} has no ansible directory, nothing to do."
+
+
+    - name: Find Ansible Collection Directories - {{ directory_application }}
+      ansible.builtin.find:
+        paths: "{{ repo_root }}/{{ directory_manifest }}/{{ directory_application }}/ansible"
+        file_type: directory
+        recurse: false
+      register: source_dirs
+
+
+    - name: Assemble Temporary Ansible Collection for Application
       ansible.builtin.include_tasks:
-        file: pre.yaml
+        file: assemble.yaml
 
 
-    - name: Template files
+    - name: Template files - {{ directory_application }}
       ansible.builtin.template:
-        src: "{{ item.src }}"
-        dest: "{{ repo_root + '/' + dir_manifest }}/{{ item.path | regex_replace('\\.j2$', '') }}"
-        mode: "{{ item.mode }}"
+        src: "{{ template_file.src }}"
+        dest: |-
+          {{ repo_root + '/' + directory_manifest }}/{{
+            directory_application }}/{{
+              template_file.path | regex_replace('\.j2$', '') }}
+        mode: "{{ template_file.mode }}"
       # yamllint disable rule:indentation
       loop: >-
         {{
           query('community.general.filetree', '../templates/')
           | selectattr('state', 'equalto', 'file')
         }}
-      # yamllint enable rule:indentation
+      loop_control:
+        loop_var: template_file
+
+
+    - name: Commit any changes
+      ansible.builtin.include_role:    # noqa: no-handler
+        name: git
+      vars:
+        git_commit_exclude:
+          - "{{ repo_root + '/' + directory_manifest }}/ansible"
+        git_commit_path: "{{ repo_root + '/' + directory_manifest }}"
+        git_commit_message: |-
+          build({{ directory_application }}): Update manifests
+
+
+    - name: Set has commits
+      ansible.builtin.set_fact:    # noqa: no-handler
+        has_commits: true
+      when: git_commit_create.changed | default(false)
+
 
   always:
 
-    - name: Remove symlinks
+    - name: Remove symlinks - {{ directory_application }}
       ansible.builtin.file:
         path: "{{ role_path }}/{{ item.path | basename }}"
         state: absent
