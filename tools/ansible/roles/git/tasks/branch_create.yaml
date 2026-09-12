@@ -38,6 +38,8 @@
   # yamllint disable rule:indentation
   when: >-
     not git_branch_exists.changed
+      and
+    not git_branch_exists_locally.rc == 0
   # yamllint enable rule:indentation
 
 
