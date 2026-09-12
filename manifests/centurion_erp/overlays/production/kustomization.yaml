@@ -11,7 +11,7 @@ components:
   - ../../components/ingress
   # - ../../components/rabbitmq-setup
   - ../../components/service-monitor
-  - ../../components/sso-keycloak
+  #- ../../components/sso-keycloak
 
 # configMapGenerator:
 #   - name: configuration
@@ -27,12 +27,10 @@ generatorOptions:
 #
 images:
   - name: nofusscomputing/centurion-erp
-    newTag: 70770b643f292cb106345c5b1dbb8e4b4debea27    # v1.30.1
-    # newTag: 833f00b62aa4fb70fe73aefdb40fe8200012d9fc    # v1.30.0
+    newTag: 50ef201dd3a30359b8ff246987acda63939a6476
 
   - name: nofusscomputing/centurion-ui
-    # newTag: 5bdab61a6dd86d7e91c77c12a2f3a1b448e1ae77    # 0.10.3 30 May 26
-    newTag: ab4bf8bc9ae37c1a95de92d45c70556da3f7497a    # 0.11.0 31 May 26
+    newTag: 4f5ad40343a490e71873d837bb4340814c7df7ad
 
 labels:
   - includeSelectors: true
@@ -40,7 +38,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: v1.30.1
+      app.kubernetes.io/version: '1.32.0_50ef201d'
 
 namespace: centurion
 
