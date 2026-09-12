@@ -1,0 +1,95 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  labels:
+    app.kubernetes.io/component: base
+    app.kubernetes.io/instance: production
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: postgres
+  name: main
+spec:
+
+  affinity:
+    additionalPodAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - postgres
+            topologyKey: kubernetes.io/hostname
+
+    enablePodAntiAffinity: true
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+        - weight: 50
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: Exists
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/prime
+                operator: Exists
+    topologyKey: kubernetes.io/hostname
+
+  # bootstrap: {}
+
+  description: "Cluster PostgreSQL Instance"
+
+  enableSuperuserAccess: false
+
+  # externalClusters: []
+
+  imageName: ghcr.io/cloudnative-pg/postgresql:-updated_by_patch-
+
+  inheritedMetadata:
+    labels:
+      app.kubernetes.io/component: base
+      app.kubernetes.io/instance: production
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/part-of: postgres
+
+  instances: 3
+
+  # monitoring: {}
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+
+  primaryUpdateStrategy: unsupervised
+
+  postgresql:
+    parameters:
+      max_parallel_workers: '34'
+      max_replication_slots: '32'
+      max_worker_processes: '34'
+
+  # replica: {}
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "100Mi"
+    limits:
+      cpu: "2"
+      memory: "1Gi"
+
+  startDelay: 300
+
+  stopDelay: 300
+
+  storage:
+    resizeInUseVolumes: false
+    size: 10Gi
