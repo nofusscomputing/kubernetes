@@ -65,8 +65,8 @@
       {%- endif %}
     pull_request_asignees: >-
       {{[
-        github_pull_request_assignee_users
-        if github_pull_request_assignee_users
+        github_pull_request_assignee_users | default('')
+        if github_pull_request_assignee_users | default(false)
         else (
           pull_request_create.json.user.login | default('-') | string
           if pull_request_create.status == 201
