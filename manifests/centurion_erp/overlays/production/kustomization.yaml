@@ -27,7 +27,7 @@ generatorOptions:
 #
 images:
   - name: nofusscomputing/centurion-erp
-    newTag: 97d1ab913baff5eb525984c111fc6ff9701ea893
+    newTag: 9e44eae76dcb90c2382352d364c07c40d786fc8d
 
   - name: nofusscomputing/centurion-ui
     newTag: bd7900f0ffab0f79125b1cd33e3b434f8f523abf
@@ -38,7 +38,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: '1.33.0'
+      app.kubernetes.io/version: '1.33.1'
 
 namespace: centurion
 
