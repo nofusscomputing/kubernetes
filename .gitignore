@@ -4,3 +4,5 @@ manifests/*/overlays/*/charts/
 
 # Temp Files
 *.tmp.*
+
+ansible.log
