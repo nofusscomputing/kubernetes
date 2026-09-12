@@ -57,15 +57,34 @@
 - name: Checkout GIT local copy of working branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git switch {{ git_branch_working }}
-  changed_when: git_branch_create.rc == 0
   register: git_branch_checkout_local
   when: >-
     git_branch_exists_locally.rc == 0
 
 
+- name: GIT featch changes
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git fetch -fpvt
+  changed_when: false
+  when: >-
+    git_branch_exists.changed
+      and
+    not git_branch_exists_locally.rc == 0
+
+
 - name: Rebase on development branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git pull origin development --rebase
+  changed_when: false
+  when: >-
+    git_branch_exists.changed
+      and
+    not git_branch_exists_locally.rc == 0
+
+
+- name: Force push GIT rebase
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git push --force
   changed_when: false
   when: >-
     git_branch_exists.changed
