@@ -52,6 +52,16 @@
     not git_branch_exists_locally.rc == 0
 
 
+- name: Rebase on development branch
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git pull origin development --rebase
+  changed_when: false
+  when: >-
+    git_branch_exists.changed
+      and
+    not git_branch_exists_locally.rc == 0
+
+
 - name: Checkout GIT working branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git switch {{ git_branch_working }}
