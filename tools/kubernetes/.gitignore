@@ -1,0 +1,8 @@
+# container.d config
+container.d/
+
+# Expanded manifests
+storage/charts/
+
+# docker container data
+volumes/

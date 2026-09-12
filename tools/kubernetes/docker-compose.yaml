@@ -1,0 +1,129 @@
+name: k0-cluster
+
+
+configs:
+  k0s.yaml:
+    content: |
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: ClusterConfig
+      metadata:
+        name: k0s
+      spec:
+        api:
+          ca:
+            expiresAfter: 87600h
+            certificatesExpireAfter: 2160h
+        controllerManager: {}
+        network:
+          clusterDomain: cluster.local
+          dualStack:
+            enabled: false
+          kubeProxy:
+            disabled: false
+          podCIDR: 10.0.80.0/21
+          primaryAddressFamily: IPv4
+          serviceCIDR: 10.0.100.0/23
+        scheduler: {}
+        storage:
+          type: kine
+        telemetry:
+          enabled: false
+        workerProfiles:
+        - name: default
+          values:
+            evictionHard:
+              memory.available: "500Mi"
+              nodefs.available: "1Gi"
+              imagefs.available: "1Gi"
+            evictionMinimumReclaim:
+              memory.available: "0Mi"
+              nodefs.available: "500Mi"
+              imagefs.available: "2Gi"
+
+
+x-k0s-image: &k0s-image harbor.earth.nww/docker/k0sproject/k0s:v1.36.4-k0s.0
+
+
+x-k0s-common: &k0s-common
+  devices:
+    - /dev/kmsg # required by kubelet's OOM watcher
+  network_mode: "bridge"
+  privileged: true
+  restart: on-failure
+  tmpfs:
+    - /run # this is where k0s stores runtime data
+    - /tmp
+
+
+
+x-k0s-controller: &k0s-controller
+  image: *k0s-image
+  <<: *k0s-common
+  configs:
+    - source: k0s.yaml
+      target: /etc/k0s/k0s.yaml
+  
+
+
+x-k0s-worker: &k0s-worker
+  image: *k0s-image
+  <<: *k0s-common
+  depends_on:
+    - k0s-controller-1
+  command: [k0s, worker, --token-file, /run/secrets/k0sproject.io/tokens/worker]
+  volumes:
+    - ./volumes/worker-1/var/lib/k0s:/var/lib/k0s # this is where k0s stores its data
+    - ./volumes/worker-1/var/log/pods:/var/log/pods # this is where k0s stores pod logs
+    - /dev/kmsg:/dev/kmsg:ro # required by kubelets OOM watcher
+    - ./volumes/k0s-worker-token:/run/secrets/k0sproject.io/tokens:ro
+    - ./container.d:/etc/k0s/containerd.d
+  security_opt:
+    - seccomp:unconfined # allow access to the session keyring
+
+
+services:
+
+  k0s-controller-1:
+    <<: *k0s-controller
+    container_name: k0s-controller-1
+    hostname: k0s-controller-1
+    command: 
+      - k0s
+      - controller
+      - --enable-worker
+      - --disable-components=metrics-server
+      - --disable-components=helm
+      # - --disable-components=kube-proxy
+      - --disable-components=windows-node
+    post_start:
+      - command:
+          - /bin/sh
+          - -euc
+          - |
+            bootstrap() {
+              # this works even if etcd isn't up
+
+              k0s token create --role worker > /run/secrets/k0sproject.io/worker-token/worker
+
+            }
+
+            while [ ! -f /var/lib/k0s/pki/ca.crt ] || ! bootstrap; do
+              sleep 1
+            done
+            sleep 10 # give this controller a bit of a head start
+
+    volumes:
+      - /dev/kmsg:/dev/kmsg:ro # required by kubelets OOM watcher
+      - ./container.d:/etc/k0s/containerd.d
+      - ./volumes/controller-1/var/lib/k0s:/var/lib/k0s # this is where k0s stores its data
+      - ./volumes/k0s-token-secrets:/var/lib/k0s/manifests/k0s-token-secrets
+      - ./volumes/k0s-controller-token:/run/secrets/k0sproject.io/controller-token
+      - ./volumes/k0s-worker-token:/run/secrets/k0sproject.io/worker-token
+    network_mode: "bridge"
+
+
+  k0s-worker-1:
+    <<: *k0s-worker
+    container_name: k0s-worker-1
+    hostname: k0s-worker-1
+    network_mode: "bridge"
