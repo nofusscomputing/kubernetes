@@ -52,7 +52,7 @@ jobs:
           ansible-galaxy collection install -r tools/ansible/requirements.yaml;
 
 
-      - name: Update Application Versions
+      - name: Update Application Version for "${{ inputs.KUSTOMIZE_APP_DIR }}"
         shell: bash
         env:
           ANSIBLE_FORCE_COLOR: "1"
@@ -67,7 +67,7 @@ jobs:
             --extra-vars "directory_application=${{ inputs.KUSTOMIZE_APP_DIR }}" \
             -vvv
 
-      - name: Run Play against "${{ inputs.KUSTOMIZE_APP_DIR }}"
+      - name: Update Manifests updating for "${{ inputs.KUSTOMIZE_APP_DIR }}"
         shell: bash
         env:
           ANSIBLE_FORCE_COLOR: "1"
@@ -79,5 +79,5 @@ jobs:
           PR_ASSIGNEE_USERS: nfc-robot
         run: |-
           ansible-playbook tools/ansible/playbooks/kustomize-manifest-update.yaml \
-            --extra-vars "dir_manifest=manifests/${{ inputs.KUSTOMIZE_APP_DIR }}" \
+            --extra-vars "dir_manifest=manifests" \
             -vvv
