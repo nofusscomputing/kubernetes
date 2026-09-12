@@ -5,6 +5,17 @@
   gather_facts: false
   connection: local
 
+
+  pre_tasks:
+
+
+    - name: Play Facts
+      ansible.builtin.set_fact:
+        repo_root: |-
+          {{ lookup( 'ansible.builtin.env', 'GITHUB_WORKSPACE') | default(
+              lookup('ansible.builtin.env', 'PWD'), true) }}
+
+
   tasks:
 
 
@@ -20,8 +31,7 @@
       ansible.builtin.include_role:    # noqa: no-handler
         name: git
       vars:
-        git_commit_exclude:
-          - "{{ repo_root + '/' + directory_manifest }}/ansible"
+        git_commit_exclude: []
         git_commit_path: "{{ playbook_dir }}/../vars/versions.yaml"
         git_commit_message: "chore: Updated Application Versions"
 
