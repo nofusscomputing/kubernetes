@@ -33,8 +33,8 @@
 - name: Create GIT working branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git switch -c {{ git_branch_working }} origin/development
-  changed_when: git_commit_changes.rc == 0
-  register: git_commit_changes
+  changed_when: git_branch_create.rc == 0
+  register: git_branch_create
   # yamllint disable rule:indentation
   when: >-
     not git_branch_exists.changed
@@ -43,15 +43,24 @@
   # yamllint enable rule:indentation
 
 
-- name: Checkout GIT working branch
+- name: Checkout GIT remote copy of working branch
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git switch --track origin/{{ git_branch_working }}
-  changed_when: git_commit_changes.rc == 0
-  register: git_commit_changes
+  changed_when: git_branch_checkout_remote.rc == 0
+  register: git_branch_checkout_remote
   when: >-
     git_branch_exists.changed
       and
     not git_branch_exists_locally.rc == 0
+
+
+- name: Checkout GIT local copy of working branch
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git switch {{ git_branch_working }}
+  changed_when: git_branch_create.rc == 0
+  register: git_branch_checkout_local
+  when: >-
+    git_branch_exists_locally.rc == 0
 
 
 - name: Rebase on development branch
@@ -62,15 +71,6 @@
     git_branch_exists.changed
       and
     not git_branch_exists_locally.rc == 0
-
-
-- name: Checkout GIT working branch
-  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
-    cmd: git switch {{ git_branch_working }}
-  changed_when: git_commit_changes.rc == 0
-  register: git_commit_changes
-  when: >-
-    git_branch_exists_locally.rc == 0
 
 
 - name: Pop latest GIT stash

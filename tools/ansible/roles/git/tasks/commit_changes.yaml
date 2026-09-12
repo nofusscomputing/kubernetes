@@ -40,7 +40,9 @@
       changed_when: false
       failed_when: true
       when: >
-        git_commit_changes.changed
+        git_branch_create.changed
+          or
+        git_branch_exists_locally.rc == 0
 
 
     - name: Delete Created Branch
@@ -49,4 +51,6 @@
       changed_when: false
       failed_when: true
       when: >
-        git_commit_changes.changed
+        git_branch_create.changed
+          or
+        git_branch_exists_locally.rc == 0
