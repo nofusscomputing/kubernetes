@@ -9,6 +9,15 @@
   register: git_branch_exists
 
 
+- name: Check if GIT working branch exists locally
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git show-ref --verify --quiet  refs/heads/{{ git_branch_working }}
+  changed_when: false
+  failed_when: >    # 0 = Exists, 1 = Not exist.
+    git_branch_exists_locally.rc > 1
+  register: git_branch_exists_locally
+
+
 - name: Git stash changes
   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
     cmd: git stash push --include-untracked -m create-branch
@@ -37,10 +46,19 @@
     cmd: git switch --track origin/{{ git_branch_working }}
   changed_when: git_commit_changes.rc == 0
   register: git_commit_changes
-  # yamllint disable rule:indentation
   when: >-
     git_branch_exists.changed
-  # yamllint enable rule:indentation
+      and
+    not git_branch_exists_locally.rc == 0
+
+
+- name: Checkout GIT working branch
+  ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+    cmd: git switch {{ git_branch_working }}
+  changed_when: git_commit_changes.rc == 0
+  register: git_commit_changes
+  when: >-
+    git_branch_exists_locally.rc == 0
 
 
 - name: Pop latest GIT stash

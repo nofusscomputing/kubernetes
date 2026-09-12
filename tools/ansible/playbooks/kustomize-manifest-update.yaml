@@ -70,5 +70,5 @@
       vars:
         github_branch_working: "{{ git_branch_working | string }}"
         github_assign_pull_request: true
-        github_pull_request_title: "build: Updated {{ directory_manifest }}"
+        github_pull_request_title: "build: Update Templated Manifests"
       when: has_commits | default(false)
