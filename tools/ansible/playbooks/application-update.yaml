@@ -9,11 +9,24 @@
   pre_tasks:
 
 
+    - name: Get current GIT branch
+      ansible.builtin.command:
+        cmd: git branch --show-current
+      changed_when: false
+      register: get_git_branch_current
+
+
     - name: Play Facts
       ansible.builtin.set_fact:
+        # yamllint disable rule:indentation
+        # noqa: jinja[spacing]
         repo_root: |-
           {{ lookup( 'ansible.builtin.env', 'GITHUB_WORKSPACE') | default(
               lookup('ansible.builtin.env', 'PWD'), true) }}
+        # yamllint enable rule:indentation
+        git_branch_current: "{{ get_git_branch_current.stdout | trim }}"
+        github_pull_request_assignee_users: |-
+          {{ lookup( 'ansible.builtin.env', 'PR_ASSIGNEE_USERS') | default(omit) }}
 
 
   tasks:
