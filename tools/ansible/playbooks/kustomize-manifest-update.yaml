@@ -58,7 +58,6 @@
       vars:
         directory_manifest: "manifests"
         directory_application: "{{ manifest_directory.path | basename }}"
-      when: directory_application == 'centurion_ui'
 
 
   post_tasks:
