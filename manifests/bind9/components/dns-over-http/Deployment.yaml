@@ -1,0 +1,20 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns
+spec:
+
+  template:
+
+    spec:
+
+      containers:
+
+        - name: dns
+
+          ports:
+            - containerPort: 443
+              name: dns-over-http
+              protocol: TCP

@@ -1,0 +1,48 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind
+spec:
+  template:
+
+    spec:
+
+      initContainers:
+
+        - name: extra-conf
+          image: alpine:3.23.2
+          command:
+            - sh
+            - -c
+            - |
+              echo "Start init";
+              rm -frv /etc/bind/conf.d/extra/*;
+              cp -frv /etc-bind-extra/* /etc/bind/conf.d/extra/;
+
+          resources:
+            limits:
+              cpu: 150m
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              memory: 150Mi
+
+          volumeMounts:
+
+            - name: data
+              mountPath: /etc/bind/conf.d/extra
+              subPath: extra/
+
+            - name: rndc
+              mountPath: "/etc-bind-extra/rndc.conf"
+              subPath: rndc.conf
+
+      volumes:
+        - name: rndc
+          configMap:
+            name: rndc-conf
+            items:
+              - key: "rndc.conf"
+                path: "rndc.conf"
