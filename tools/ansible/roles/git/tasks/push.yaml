@@ -5,3 +5,14 @@
     cmd: "git push --set-upstream origin {{ git_branch_working }}"
   changed_when: git_branch_exists.rc == 0
   register: git_push
+#   when: >
+#     not git_branch_exists_locally.rc == 0
+
+
+# - name: Push GIT working branch
+#   ansible.builtin.command:    # noqa: command-instead-of-module no-handler
+#     cmd: git push
+#   changed_when: git_branch_exists.rc == 0
+#   register: git_push
+#   when: >
+#     git_branch_exists_locally.rc == 0

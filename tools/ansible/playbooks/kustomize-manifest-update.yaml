@@ -46,6 +46,12 @@
       register: manifest_directories
 
 
+    - name: Setup Git Branches
+      ansible.builtin.include_role:
+        name: git
+        tasks_from: branch_create.yaml
+
+
   tasks:
 
 

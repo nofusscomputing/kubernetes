@@ -29,6 +29,12 @@
           {{ lookup( 'ansible.builtin.env', 'PR_ASSIGNEE_USERS') | default(omit) }}
 
 
+    - name: Setup Git Branches
+      ansible.builtin.include_role:
+        name: git
+        tasks_from: branch_create.yaml
+
+
   tasks:
 
 
