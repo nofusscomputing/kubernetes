@@ -27,10 +27,10 @@ generatorOptions:
 #
 images:
   - name: nofusscomputing/centurion-erp
-    newTag: {{ versions.centurion_erp.git_sha_version_head }}
+    newTag: {{ versions.centurion_erp.git_sha_version_latest }}
 
   - name: nofusscomputing/centurion-ui
-    newTag: {{ versions.centurion_ui.git_sha_version_head }}
+    newTag: {{ versions.centurion_ui.git_sha_version_latest }}
 
 labels:
   - includeSelectors: true
@@ -38,7 +38,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: '{{ versions.centurion_erp.git_version_latest }}_{{ versions.centurion_erp.git_version_head }}'
+      app.kubernetes.io/version: '{{ versions.centurion_erp.git_version_latest }}'
 
 namespace: centurion
 
