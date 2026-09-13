@@ -8,10 +8,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 components:
-  - ../../components/dashboard
-  - ../../components/rabbitmq-setup
-  - ../../components/service-monitor
-  # - ../../components/sso-keycloak
+  - ../../components/ingress
 
 # configMapGenerator:
 #   - name: configuration
@@ -24,16 +21,18 @@ generatorOptions:
 
 images:
   - name: nofusscomputing/centurion-erp
-    newTag: {{ versions.centurion_erp.git_sha_version_latest }}
+    newTag: {{ versions.centurion_erp.git_sha_version_head }}
 
   - name: nofusscomputing/centurion-ui
-    newTag: {{ versions.centurion_ui.git_sha_version_latest }}
+    newTag: {{ versions.centurion_ui.git_sha_version_head }}
 
 labels:
   - includeSelectors: true
     pairs:
-      app.kubernetes.io/instance: cluster
+      app.kubernetes.io/instance: head
 
+  - pairs:
+      app.kubernetes.io/version: '{{ versions.centurion_erp.git_version_latest }}_{{ versions.centurion_erp.git_version_head }}'
 
 namespace: centurion
 
@@ -62,7 +61,7 @@ namespace: centurion
 
 
 resources:
-  - ../latest
+  - ../../base
 
 # secretGenerator:
 #   - name: secret-key

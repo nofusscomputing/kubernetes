@@ -8,8 +8,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 components:
-  - ../../components/ingress
-  # - ../../components/rabbitmq-setup
+  - ../../components/dashboard
+  - ../../components/rabbitmq-setup
   - ../../components/service-monitor
   # - ../../components/sso-keycloak
 
@@ -21,10 +21,7 @@ components:
 generatorOptions:
   disableNameSuffixHash: true
 
-#
-#  to update image tag, cd to kustomize.yaml dir and run with image and tag
-#  kustomize edit set image nofusscomputing/centurion-erp:tester
-#
+
 images:
   - name: nofusscomputing/centurion-erp
     newTag: 9e44eae76dcb90c2382352d364c07c40d786fc8d
@@ -37,8 +34,6 @@ labels:
     pairs:
       app.kubernetes.io/instance: cluster
 
-  - pairs:
-      app.kubernetes.io/version: '1.33.1'
 
 namespace: centurion
 
@@ -67,17 +62,17 @@ namespace: centurion
 
 
 resources:
-  - ../../base
+  - ../latest
 
 # secretGenerator:
-#   - name: secret_key
+#   - name: secret-key
 #     files:
-#       - secret_key.py
+#       - 90.secret_key.py
 
 #   - name: celery-broker
 #     files:
-#       - celery-broker.py
+#       - 10.celery-broker.py
 
 #   - name: database
 #     files:
-#       - database.py
+#       - 20.database.py
