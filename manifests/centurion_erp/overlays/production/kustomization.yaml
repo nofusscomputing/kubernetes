@@ -70,14 +70,14 @@ resources:
   - ../../base
 
 # secretGenerator:
-#   - name: secret_key
+#   - name: secret-key
 #     files:
-#       - secret_key.py
+#       - 90.secret_key.py
 
 #   - name: celery-broker
 #     files:
-#       - celery-broker.py
+#       - 10.celery-broker.py
 
 #   - name: database
 #     files:
-#       - database.py
+#       - 20.database.py

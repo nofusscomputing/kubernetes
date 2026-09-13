@@ -38,15 +38,15 @@ resources:
   - Deployment-worker.yaml
   - Service-api.yaml
 
-secretGenerator:
-  - name: secret-key
-    files:
-      - 90.secret_key.py
+# secretGenerator:
+#   - name: secret-key
+#     files:
+#       - 90.secret_key.py
 
-  - name: celery-broker
-    files:
-      - 10.celery-broker.py
+#   - name: celery-broker
+#     files:
+#       - 10.celery-broker.py
 
-  - name: database
-    files:
-      - 20.database.py
+#   - name: database
+#     files:
+#       - 20.database.py
