@@ -13,7 +13,7 @@ kind: Kustomization
 images:
   # this image is intended to be kept up to date with the current release tag.
   - name: nofusscomputing/centurion-ui
-    newTag: 084a74baaa74f29f7f7c3513dbc7763310131e01
+    newTag: f9bf21705b8e042148244be0ba75ecf615ae6a4a
 
 labels:
   - includeSelectors: true
@@ -21,7 +21,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: '0.14.2'
+      app.kubernetes.io/version: '0.14.3'
 
 namespace: centurion-ui
 
