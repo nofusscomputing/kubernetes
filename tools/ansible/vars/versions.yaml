@@ -11,7 +11,7 @@ versions:
     git_version_head: 5667219c
     git_version_latest: 1.33.4
   centurion_ui:
-    git_sha_version_head: 498f1e115a64b7c9fae2c207224892bd91bf4b0e
+    git_sha_version_head: 61b998e4d6fb91e870542cf71d3afb7d641cabed
     git_sha_version_latest: 8061596c28faeb25b6fe9828149459032cec766f
-    git_version_head: 498f1e11
+    git_version_head: 61b998e4
     git_version_latest: 0.14.4
