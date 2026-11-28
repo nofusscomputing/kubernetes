@@ -6,10 +6,10 @@
 
 versions:
   centurion_erp:
-    git_sha_version_head: 1631aa5e42366f78bc1a6d7f50fe04e6afcbd84f
-    git_sha_version_latest: 1b56fbb3e1b56f26dcb662e848c5f8eafa7f425b
-    git_version_head: 1631aa5e
-    git_version_latest: 1.37.0
+    git_sha_version_head: c9e6a8741afba63b7a5eec7b774b58f1b18d42ff
+    git_sha_version_latest: 8e545fcd87a1e431b678e972b8dbecb689962649
+    git_version_head: c9e6a874
+    git_version_latest: 1.37.1
   centurion_ui:
     git_sha_version_head: f23940cb191c2e75c2164c7d441713decd6bb9bc
     git_sha_version_latest: e70b0ee7fb03e040ae7e95f88c09b3e43c13fafa
