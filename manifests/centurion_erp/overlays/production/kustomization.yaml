@@ -30,7 +30,7 @@ images:
     newTag: 1b56fbb3e1b56f26dcb662e848c5f8eafa7f425b
 
   - name: nofusscomputing/centurion-ui
-    newTag: 14823f5537ec67ac5420606eecf1485d48e39320
+    newTag: e70b0ee7fb03e040ae7e95f88c09b3e43c13fafa
 
 labels:
   - includeSelectors: true
