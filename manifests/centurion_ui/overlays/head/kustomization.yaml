@@ -14,7 +14,7 @@ images:
   # This image is intended to be kept up to date with feat-* and dev branch.
   - name: nofusscomputing/centurion-ui
     newName: ghcr.io/nofusscomputing/centurion-ui
-    newTag: 758a0deb06d18a13066e58b4260e754fc4dc61aa
+    newTag: f23940cb191c2e75c2164c7d441713decd6bb9bc
 
 labels:
   - includeSelectors: true
@@ -22,7 +22,7 @@ labels:
       app.kubernetes.io/instance: cluster
 
   - pairs:
-      app.kubernetes.io/version: '0.15.1_758a0deb'
+      app.kubernetes.io/version: '0.16.0_f23940cb'
 
 namespace: centurion-ui
 
